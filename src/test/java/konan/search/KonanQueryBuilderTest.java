@@ -13,7 +13,7 @@ class KonanQueryBuilderTest {
 	void getQueryAnd1() {
 		var maker = new KonanQueryBuilder<Company>(Company.class);
 
-		maker.getWhere().equal("name", "chang").and().equal("age", 2);
+		maker.getWhere().equals("name", "chang").and().equals("age", 2);
 
 		String kquery = maker.getQuery();
 		System.out.println(kquery);
@@ -26,7 +26,7 @@ class KonanQueryBuilderTest {
 	void getQueryEqualString() {
 		var maker = new KonanQueryBuilder<Company>(Company.class);
 
-		maker.getWhere().equal("name", "chang");
+		maker.getWhere().equals("name", "chang");
 
 		String kquery = maker.getQuery();
 		System.out.println(kquery);
@@ -40,7 +40,7 @@ class KonanQueryBuilderTest {
 	void getQueryEqualInteger() {
 		var maker = new KonanQueryBuilder<Company>(Company.class);
 
-		maker.getWhere().equal("age", 1);
+		maker.getWhere().equals("age", 1);
 
 		String kquery = maker.getQuery();
 		System.out.println(kquery);
