@@ -13,13 +13,18 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class WhereQueryBuilder<T> implements KonanMatchField {
+public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	private final List<KonanColumn> columnAnnotationList;
+	private final StringBuilder queryBuilder = new StringBuilder();
 
-	private StringBuilder queryBuilder = new StringBuilder();
+	private int beginBracket = 0;
+	private int endBracket = 0;
 
 	private boolean isAppendAdverb = false;
 
+	/**
+	 * 쿼리 동작시 앞뒤 공봭추가
+	 */
 	private void prevAppend() {
 		if (queryBuilder.length() > 0)
 			queryBuilder.append(" ");
@@ -57,18 +62,36 @@ public class WhereQueryBuilder<T> implements KonanMatchField {
 			isAppendAdverb = true;
 	}
 
+	/**
+	 * 괄호 "(" 를 엽니다
+	 * @return WhereQueryBuilder
+	 */
 	public WhereQueryBuilder<T> begin() {
 		prevAppend();
 		queryBuilder.append("(");
+		beginBracket++;
 		return this;
 	}
 
+	/**
+	 * 괄호 ")" 를 닫습니다.
+	 * @return WhereQueryBuilder
+	 */
 	public WhereQueryBuilder<T> end() {
 		prevAppend();
 		queryBuilder.append(")");
+		endBracket++;
 		return this;
 	}
 
+	/**
+	 * 하드코딩을 입력이 가능합니다
+	 * <p>
+	 *      해당기능은 쿼리의 필드 체크를 하지 못하기 떄문에 필드 체크의 누락이 있을수 있습니다  비추천하지만 문법에서 지원하지 않는 쿼리 사용을 위해 추가 되었습니다.
+	 * </p>
+	 * @param query name='john'
+	 * @return WhereQueryBuilder
+	 */
 	public WhereQueryBuilder<T> append(String query) {
 		queryBuilder.append(query);
 
@@ -78,6 +101,10 @@ public class WhereQueryBuilder<T> implements KonanMatchField {
 		return this;
 	}
 
+	/**
+	 * and 조건 문을 추가합니다.*
+	 * @return WhereQueryBuilder
+	 */
 	public WhereQueryBuilder<T> and() {
 		internalAppendAdverb("AND");
 		return this;
@@ -89,6 +116,12 @@ public class WhereQueryBuilder<T> implements KonanMatchField {
 	// 	return this;
 	// }
 
+	/**
+	 * and 필드 = 값 형태의 조건문을 추가 합니다.
+	 * @param fieldName : 검색필드
+	 * @param value : 검색값
+	 * @return WhereQueryBuilder
+	 */
 	public WhereQueryBuilder<T> and(String fieldName, Object value) {
 		if (StringUtils.isEmpty(fieldName)) {
 			throw new IllegalArgumentException("member name is empty");
@@ -106,6 +139,10 @@ public class WhereQueryBuilder<T> implements KonanMatchField {
 		return this;
 	}
 
+	/**
+	 * OR 조건 문을 추가합니다.
+	 * @return WhereQueryBuilder
+	 */
 	public WhereQueryBuilder<T> or() {
 		internalAppendAdverb("OR");
 		return this;
@@ -117,6 +154,12 @@ public class WhereQueryBuilder<T> implements KonanMatchField {
 	// 	return this;
 	// }
 
+	/**
+	 * OR 필드-값 형태의 조건문을 추가합니다.
+	 * @param fieldName : 검색필드
+	 * @param value : 검색값
+	 * @return WhereQueryBuilder
+	 */
 	public WhereQueryBuilder<T> or(String fieldName, Object value) {
 		if (StringUtils.isEmpty(fieldName)) {
 			throw new IllegalArgumentException("member name is empty");
@@ -134,11 +177,29 @@ public class WhereQueryBuilder<T> implements KonanMatchField {
 		return this;
 	}
 
-	public WhereQueryBuilder<T> equal(String fieldName, String value) {
+	/**
+	 * 값을 비교하는 문법을 추가합니다.
+	 * <p>
+	 *      주로 where절의 시작이나 and().equals("name", "john") 과 같이 and, or조건 뒤에 사용합니다.
+	 * </p>
+	 * @param fieldName : 검색필드
+	 * @param value : 검색 값
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> equals(String fieldName, String value) {
 		return equalEx(fieldName, true, value);
 	}
 
-	public WhereQueryBuilder<T> equal(String fieldName, Integer value) {
+	/**
+	 * 값을 비교하는 문법을 추가합니다.
+	 * <p>
+	 *      주로 where절의 시작이나 and().equals("name", "john") 과 같이 and, or조건 뒤에 사용합니다.
+	 * </p>
+	 * @param fieldName : 검색필드
+	 * @param value : 검색 값
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> equals(String fieldName, Integer value) {
 		return equalEx(fieldName, false, value);
 	}
 
@@ -181,6 +242,19 @@ public class WhereQueryBuilder<T> implements KonanMatchField {
 		if (!exists) {
 			throw new IllegalArgumentException("not found KonanColumn Annotaion");
 		}
+	}
+
+	@Override
+	public boolean isNotBracketPair() {
+		return this.beginBracket != this.getEndBracket();
+	}
+
+	@Override
+	public String getKonanQuery() {
+		if (isNotBracketPair()) {
+			throw new IllegalStateException("괄호의 열고 닫고 갯수가 정확하지 않습니다.");
+		}
+		return queryBuilder.toString();
 	}
 
 	// public WhereQueryBuilder<T> equalIdx(String query) {
