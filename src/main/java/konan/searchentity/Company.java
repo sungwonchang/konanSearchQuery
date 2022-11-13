@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @KonanTable(view = "view_com", table = "company")
-public class Companies {
+public class Company {
 	@KonanColumn(name = "c_name", description = "회사명")
 	String name;
 	@KonanColumn(name = "addr", description = "회사명")
