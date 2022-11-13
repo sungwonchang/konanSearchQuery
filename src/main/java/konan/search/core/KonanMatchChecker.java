@@ -6,4 +6,6 @@ public interface KonanMatchChecker {
 	boolean isNotBracketPair();
 
 	String getKonanQuery();
+
+	void clear();
 }

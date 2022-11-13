@@ -203,6 +203,13 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		return equalEx(fieldName, false, value);
 	}
 
+	/**
+	 * equals의 구현 모체
+	 * @param fieldName : 검색 필드
+	 * @param quote : 값의 싱글 쿼텐션 추가 여부 (String)
+	 * @param value : 검색 값
+	 * @return WhereQueryBuilder
+	 */
 	public WhereQueryBuilder<T> equalEx(String fieldName, boolean quote, Object value) {
 		if (StringUtils.isBlank(fieldName)) {
 			throw new IllegalArgumentException("member name is empty");
@@ -228,12 +235,12 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 *     대소문자 구분을 해야함 검색엔진은 대소문자를 철저히 구분하기떄문에 검증 프로세스에 Ignorecase가 있으면 안됨
 	 * </p>
 	 * @param fieldName : 필드명
-	 * @return 유효한 필드인지 true/false
+	 * @exception IllegalArgumentException : 선언되지 않은 필드 사용, 선언되지 않은 테이블 사용
 	 */
 	@Override
 	public void notExistFieldCheck(@NonNull String fieldName) {
 		if (CollectionUtils.isEmpty(this.columnAnnotationList)) {
-			throw new IllegalArgumentException("not found TableClass KonanColumn Annotaion");
+			throw new IllegalArgumentException("not found TableClass KonanTable Annotaion");
 		}
 		boolean exists = this.columnAnnotationList.stream()
 				.anyMatch(k -> fieldName.equals(k.name()));
@@ -244,17 +251,36 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		}
 	}
 
+	/**
+	 * 브라캣을 begin, end로 수작업으로 열고 닫았을 경우 괄호의 갯수를 채크한다.
+	 * @return boolean 열고 닫는 괄호의 갯수가 불일치 하면 true
+	 */
 	@Override
 	public boolean isNotBracketPair() {
 		return this.beginBracket != this.getEndBracket();
 	}
 
+	/**
+	 * 완성돤 쿼리 반환
+	 * @return 코난 쿼리 where절 반환
+	 */
 	@Override
 	public String getKonanQuery() {
 		if (isNotBracketPair()) {
 			throw new IllegalStateException("괄호의 열고 닫고 갯수가 정확하지 않습니다.");
 		}
-		return queryBuilder.toString();
+
+		var query = queryBuilder.toString();
+		this.clear();
+		return query;
+	}
+
+	/**
+	 * 작성중이던 쿼리를 초기화 합니다.
+	 */
+	@Override
+	public void clear() {
+		queryBuilder.delete(0, queryBuilder.length());
 	}
 
 	// public WhereQueryBuilder<T> equalIdx(String query) {
