@@ -1,4 +1,4 @@
-package konan.search;
+package konan.search.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,10 +21,9 @@ public class KonanQueryBuilder<T> {
 
 		this.persistentClass = persistentClass;
 
-		this.where = new WhereQueryBuilder<T>();
-
 		tableAnnotation = getKonanTableAssign(persistentClass);
 		columnAnnotationList = getKonanColumnAssign(persistentClass);
+		this.where = new WhereQueryBuilder<T>(columnAnnotationList);
 	}
 
 	private KonanTable getKonanTableAssign(Class<?> clazz) {
