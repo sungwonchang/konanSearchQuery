@@ -124,7 +124,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 */
 	public WhereQueryBuilder<T> and(String fieldName, Object value) {
 		if (StringUtils.isEmpty(fieldName)) {
-			throw new IllegalArgumentException("member name is empty");
+			throw new IllegalArgumentException("not found argument fieldName");
 		}
 		notExistFieldCheck(fieldName);
 
@@ -162,7 +162,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 */
 	public WhereQueryBuilder<T> or(String fieldName, Object value) {
 		if (StringUtils.isEmpty(fieldName)) {
-			throw new IllegalArgumentException("member name is empty");
+			throw new IllegalArgumentException("not found argument fieldName");
 		}
 		notExistFieldCheck(fieldName);
 
@@ -212,7 +212,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 */
 	public WhereQueryBuilder<T> equalEx(String fieldName, boolean quote, Object value) {
 		if (StringUtils.isBlank(fieldName)) {
-			throw new IllegalArgumentException("member name is empty");
+			throw new IllegalArgumentException("not found argument fieldName");
 		}
 		notExistFieldCheck(fieldName);
 

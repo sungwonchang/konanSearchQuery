@@ -56,7 +56,7 @@ public class KonanQueryBuilder<T> {
 
 	/**
 	 * 완성된 쿼리를 반환합니다.
-	 * @return 쿼리바환
+	 * @return 쿼리반환
 	 */
 	public String getQuery() {
 		return where.getKonanQuery();
