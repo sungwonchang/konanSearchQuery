@@ -17,6 +17,10 @@ public class Company {
 	String bossName;
 	@KonanColumn(name = "welfare", description = "복지")
 	String welfare;
+
+	@KonanColumn(name = "codes", description = "기업형태코드 (여러개)")
+	String codes;
+
 	@KonanColumn(multiIndex = "ix_idx_name_and_boss", description = "멀티인덱스 name + boss")
 	String multiIndex1;
 }

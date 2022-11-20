@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import konan.search.annotaions.KonanColumn;
 import lombok.Getter;
@@ -231,6 +232,108 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		return this;
 	}
 
+	public WhereQueryBuilder<T> inEx(String fieldName, boolean quote, Integer... params) {
+		return in(fieldName, quote, params);
+	}
+
+	public WhereQueryBuilder<T> inEx(String fieldName, boolean quote, String... params) {
+		return in(fieldName, quote, params);
+	}
+
+	public WhereQueryBuilder<T> inWithStringList(String fieldName, boolean quote, List<String> params) {
+		return in(fieldName, quote, params.toArray());
+	}
+
+	public WhereQueryBuilder<T> inWithIntegerList(String fieldName, boolean quote, List<Integer> params) {
+		return in(fieldName, quote, params.toArray());
+	}
+
+	/**
+	 * In문  작성쿼리
+	 * <p>
+	 *     추후 확인해야할점.. String List타입은 본것 같은데 .. IntList타입이 없으니 싱글 쿼텐션이 기본 값이 여도 될수도 있다..
+	 *     codes in { '01', '02' , '03', '04'}
+	 *     usage
+	 *     *
+	 * </p>
+	 * @param fieldName
+	 * @param quote
+	 * @param params
+	 * @return
+	 */
+	public WhereQueryBuilder<T> in(String fieldName, boolean quote, Object... params) {
+		if (Strings.isBlank(fieldName)) {
+			throw new IllegalArgumentException("not found argument fieldName");
+		}
+		prevAppend();
+
+		queryBuilder.append(fieldName);
+		queryBuilder.append(" IN { ");
+
+		join(quote ? "'" : Strings.EMPTY, params);
+
+		queryBuilder.append(" }");
+
+		internalAppendAdverb();
+
+		return this;
+	}
+
+	//todo : 별도로 abstract 뺄수도 있음
+	protected void join(String mark, Object... params) {
+
+		if (params != null && params.length > 0) {
+			queryBuilder.append(mark).append(params[0]).append(mark);
+
+			for (int index = 1; index < params.length; index++) {
+				if (params[index] != null) {
+					queryBuilder.append(", ");
+
+					queryBuilder.append(mark).append(params[index]).append(mark);
+				}
+			}
+		}
+	}
+
+	// /**
+	//  * and 필드 = 값 형태의 조건문을 추가 합니다.
+	//  * @param fieldName : 검색필드
+	//  * @param value : 검색값
+	//  * @return WhereQueryBuilder
+	//  */
+	// public WhereQueryBuilder<T> andIn(String fieldName, Object value) {
+	// 	if (StringUtils.isEmpty(fieldName)) {
+	// 		throw new IllegalArgumentException("not found argument fieldName");
+	// 	}
+	// 	notExistFieldCheck(fieldName);
+	//
+	// 	prevAppend();
+	// 	queryBuilder.append("AND");
+	// 	prevAppend();
+	// 	queryBuilder.append(fieldName);
+	// 	queryBuilder.append(" = ").append(value);
+	//
+	// 	internalAppendAdverb();
+	//
+	// 	return this;
+	// }
+
+	// public WhereQueryBuilder<T> andIn(String query) {
+	//
+	// 	return this;
+	// }
+
+	// public WhereQueryBuilder<T> In() {
+	//
+	// 	return this;
+	// }
+	//
+	// public WhereQueryBuilder<T> In(String query) {
+	//
+	// 	return this;
+	// }
+	//
+
 	/**
 	 * 검색엔진 유효 필드 인지 확인
 	 * <p>
@@ -300,26 +403,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	// 	return this;
 	// }
 
-	// public WhereQueryBuilder<T> andIn() {
-	//
-	// 	return this;
-	// }
-	//
-	// public WhereQueryBuilder<T> andIn(String query) {
-	//
-	// 	return this;
-	// }
-
-	// public WhereQueryBuilder<T> In() {
-	//
-	// 	return this;
-	// }
-	//
-	// public WhereQueryBuilder<T> In(String query) {
-	//
-	// 	return this;
-	// }
-	//
 	// public WhereQueryBuilder<T> notIn() {
 	//
 	// 	return this;
