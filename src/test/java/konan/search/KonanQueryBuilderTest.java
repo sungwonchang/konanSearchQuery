@@ -13,12 +13,12 @@ class KonanQueryBuilderTest {
 	void getQueryAnd1() {
 		var maker = new KonanQueryBuilder<Company>(Company.class);
 
-		maker.getWhere().equals("name", "chang").and().equals("age", 2);
+		maker.getWhere().equals("name", "testCompany").and().equals("empcnt", 2);
 
 		String kquery = maker.getQuery();
 		System.out.println(kquery);
 		assertAll(
-				() -> assertEquals(kquery, "name = 'chang' AND age = 2")
+				() -> assertEquals("name = 'testCompany' AND empcnt = 2", kquery)
 		);
 	}
 
@@ -26,13 +26,13 @@ class KonanQueryBuilderTest {
 	void getQueryEqualString() {
 		var maker = new KonanQueryBuilder<Company>(Company.class);
 
-		maker.getWhere().equals("name", "chang");
+		maker.getWhere().equals("name", "testCompany");
 
 		String kquery = maker.getQuery();
 		System.out.println(kquery);
 
 		assertAll(
-				() -> assertEquals(kquery, "name = 'chang'")
+				() -> assertEquals("name = 'testCompany'", kquery)
 		);
 	}
 
@@ -40,13 +40,13 @@ class KonanQueryBuilderTest {
 	void getQueryEqualInteger() {
 		var maker = new KonanQueryBuilder<Company>(Company.class);
 
-		maker.getWhere().equals("age", 1);
+		maker.getWhere().equals("empcnt", 1);
 
 		String kquery = maker.getQuery();
 		System.out.println(kquery);
 
 		assertAll(
-				() -> assertEquals(kquery, "age = 1")
+				() -> assertEquals("empcnt = 1", kquery)
 		);
 	}
 

@@ -7,16 +7,16 @@ import lombok.Getter;
 @Getter
 @KonanTable(view = "view_com", table = "company")
 public class Company {
-	@KonanColumn(name = "c_name", description = "회사명")
+	@KonanColumn(name = "name", description = "회사명")
 	String name;
-	@KonanColumn(name = "addr", description = "회사명")
+	@KonanColumn(name = "addr", description = "주소")
 	String address;
-	@KonanColumn(name = "empcnt", description = "회사명")
+	@KonanColumn(name = "empcnt", description = "사원수")
 	Integer employeeCount;
-	@KonanColumn(name = "boss", description = "회사명")
+	@KonanColumn(name = "boss", description = "대표이름")
 	String bossName;
-	@KonanColumn(name = "복지", description = "회사명")
+	@KonanColumn(name = "welfare", description = "복지")
 	String welfare;
-	@KonanColumn(multiIndex = "ix_idx_name_and_boss")
+	@KonanColumn(multiIndex = "ix_idx_name_and_boss", description = "멀티인덱스 name + boss")
 	String multiIndex1;
 }

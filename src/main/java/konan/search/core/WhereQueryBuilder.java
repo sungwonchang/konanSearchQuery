@@ -245,7 +245,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		boolean exists = this.columnAnnotationList.stream()
 				.anyMatch(k -> fieldName.equals(k.name()));
 
-		exists = true;
 		if (!exists) {
 			throw new IllegalArgumentException("not found KonanColumn Annotaion");
 		}
