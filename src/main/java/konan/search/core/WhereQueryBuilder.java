@@ -10,9 +10,11 @@ import konan.search.annotaions.KonanColumn;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @RequiredArgsConstructor
+@Slf4j
 public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	private final List<KonanColumn> columnAnnotationList;
 	private final StringBuilder queryBuilder = new StringBuilder();
@@ -265,11 +267,12 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 */
 	@Override
 	public String getKonanQuery() {
+		var query = queryBuilder.toString();
 		if (isNotBracketPair()) {
+			log.warn(query);
 			throw new IllegalStateException("괄호의 열고 닫고 갯수가 정확하지 않습니다.");
 		}
 
-		var query = queryBuilder.toString();
 		this.clear();
 		return query;
 	}
