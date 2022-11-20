@@ -15,6 +15,24 @@ import konan.searchentity.Company;
 class KonanQueryBuilderTest {
 
 	@Nested
+	@DisplayName("begin/end 쿼리 테스트")
+	class GenerateBeginEndQuery {
+		@Test
+		@DisplayName("begin  end 괄호 감싸기 테스트")
+		void getQueryBeginEnd() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+
+			maker.getWhere().begin().equals("name", "testCompany").and().equals("empcnt", 2).end();
+
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+			assertAll(
+					() -> assertEquals("( name = 'testCompany' AND empcnt = 2 )", kquery)
+			);
+		}
+	}
+
+	@Nested
 	@DisplayName("And 쿼리 테스트")
 	class GenerateAndQuery {
 		@Test
@@ -28,6 +46,52 @@ class KonanQueryBuilderTest {
 			System.out.println(kquery);
 			assertAll(
 					() -> assertEquals("name = 'testCompany' AND empcnt = 2", kquery)
+			);
+		}
+
+		@Test
+		@DisplayName("and 쿼리 테스트2")
+		void getQueryAndForFieldValue() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+
+			maker.getWhere().equals("name", "testCompany").and("empcnt", 2);
+
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+			assertAll(
+					() -> assertEquals("name = 'testCompany' AND empcnt = 2", kquery)
+			);
+		}
+	}
+
+	@Nested
+	@DisplayName("OR 쿼리 테스트")
+	class GenerateOrQuery {
+		@Test
+		@DisplayName("OR 쿼리 테스트1")
+		void getQueryOr() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+
+			maker.getWhere().equals("name", "testCompany").or().equals("empcnt", 2);
+
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+			assertAll(
+					() -> assertEquals("name = 'testCompany' OR empcnt = 2", kquery)
+			);
+		}
+
+		@Test
+		@DisplayName("OR 쿼리 테스트2")
+		void getQueryOrForFieldValue() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+
+			maker.getWhere().equals("name", "testCompany").or("empcnt", 2);
+
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+			assertAll(
+					() -> assertEquals("name = 'testCompany' OR empcnt = 2", kquery)
 			);
 		}
 	}
@@ -279,7 +343,7 @@ class KonanQueryBuilderTest {
 	}
 
 	@Nested
-	class konanMatchCheckerInterFaceTest {
+	class KonanMatchCheckerInterFaceTest {
 
 		@Test
 		@DisplayName("정의 되지 않는 필드 검색")
