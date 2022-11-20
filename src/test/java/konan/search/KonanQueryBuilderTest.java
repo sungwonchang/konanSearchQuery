@@ -134,6 +134,19 @@ class KonanQueryBuilderTest {
 	@DisplayName("IN 쿼리 테스트")
 	class GenerateInQuery {
 		@Test
+		@DisplayName("in 쿼리 작성테스트-없는 필드 검색시 실패")
+		void getQueryInNotFoundField() {
+			//given
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+
+			//when, then
+			IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class,
+					() -> maker.getWhere().in("test", true, 1, 2, 3, 4));
+
+			assertEquals("not found KonanColumn Annotaion", illegalArgumentException.getMessage());
+		}
+
+		@Test
 		@DisplayName("in 쿼리 작성테스트")
 		void getQueryIn() {
 			var makerInt = new KonanQueryBuilder<Company>(Company.class);
