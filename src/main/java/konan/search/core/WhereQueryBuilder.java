@@ -270,7 +270,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		var query = queryBuilder.toString();
 		if (isNotBracketPair()) {
 			log.warn(query);
-			throw new IllegalStateException("괄호의 열고 닫고 갯수가 정확하지 않습니다.");
+			throw new IllegalStateException("괄호의 열고 닫고 갯수가 불일치 합니다.");
 		}
 
 		this.clear();
@@ -281,6 +281,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * 작성중이던 쿼리를 초기화 합니다.
 	 */
 	@Override
+
 	public void clear() {
 		queryBuilder.delete(0, queryBuilder.length());
 	}
