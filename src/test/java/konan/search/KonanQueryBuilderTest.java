@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import konan.search.core.KonanQueryBuilder;
@@ -57,105 +58,110 @@ class KonanQueryBuilderTest {
 		);
 	}
 
-	@Test
-	@DisplayName("in 쿼리 작성테스트")
-	void getQueryIn() {
-		var makerInt = new KonanQueryBuilder<Company>(Company.class);
-		makerInt.getWhere().in("codes", true, 1, 2, 3, 4);
+	@Nested
+	@DisplayName("IN 쿼리 테스트")
+	public class GenerateInQuery {
+		@Test
+		@DisplayName("in 쿼리 작성테스트")
+		void getQueryIn() {
+			var makerInt = new KonanQueryBuilder<Company>(Company.class);
+			makerInt.getWhere().in("codes", true, 1, 2, 3, 4);
 
-		var makerString = new KonanQueryBuilder<Company>(Company.class);
-		makerString.getWhere().in("codes", true, "1", "2", "3", "4");
+			var makerString = new KonanQueryBuilder<Company>(Company.class);
+			makerString.getWhere().in("codes", true, "1", "2", "3", "4");
 
-		var makerInt2 = new KonanQueryBuilder<Company>(Company.class);
-		makerInt2.getWhere().in("codes", false, 1, 2, 3, 4);
+			var makerInt2 = new KonanQueryBuilder<Company>(Company.class);
+			makerInt2.getWhere().in("codes", false, 1, 2, 3, 4);
 
-		var makerString2 = new KonanQueryBuilder<Company>(Company.class);
-		makerString2.getWhere().in("codes", false, "1", "2", "3", "4");
+			var makerString2 = new KonanQueryBuilder<Company>(Company.class);
+			makerString2.getWhere().in("codes", false, "1", "2", "3", "4");
 
-		String kquery1 = makerInt.getQuery();
-		String kquery2 = makerString.getQuery();
-		String kquery3 = makerInt2.getQuery();
-		String kquery4 = makerString2.getQuery();
+			String kquery1 = makerInt.getQuery();
+			String kquery2 = makerString.getQuery();
+			String kquery3 = makerInt2.getQuery();
+			String kquery4 = makerString2.getQuery();
 
-		assertAll(
-				() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery1),
-				() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery2),
-				() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery3),
-				() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery4)
-		);
-	}
+			assertAll(
+					() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery1),
+					() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery2),
+					() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery3),
+					() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery4)
+			);
+		}
 
-	@Test
-	@DisplayName("inex 쿼리 작성테스트 슷자")
-	void getQueryinEx1() {
-		var makerInt = new KonanQueryBuilder<Company>(Company.class);
-		makerInt.getWhere().inEx("codes", true, 1, 2, 3, 4);
-		var makerInt2 = new KonanQueryBuilder<Company>(Company.class);
-		makerInt2.getWhere().inEx("codes", false, 1, 2, 3, 4);
+		@Test
+		@DisplayName("inex 쿼리 작성테스트 슷자")
+		void getQueryinEx1() {
+			var makerInt = new KonanQueryBuilder<Company>(Company.class);
+			makerInt.getWhere().inEx("codes", true, 1, 2, 3, 4);
+			var makerInt2 = new KonanQueryBuilder<Company>(Company.class);
+			makerInt2.getWhere().inEx("codes", false, 1, 2, 3, 4);
 
-		String kquery1 = makerInt.getQuery();
-		String kquery2 = makerInt2.getQuery();
+			String kquery1 = makerInt.getQuery();
+			String kquery2 = makerInt2.getQuery();
 
-		assertAll(
-				() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery1),
-				() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery2)
-		);
-	}
+			assertAll(
+					() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery1),
+					() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery2)
+			);
+		}
 
-	@Test
-	@DisplayName("inex 쿼리 작성테스트 문자")
-	void getQueryinEx2() {
-		var makerString = new KonanQueryBuilder<Company>(Company.class);
-		makerString.getWhere().inEx("codes", true, 1, 2, 3, 4);
-		var makerString2 = new KonanQueryBuilder<Company>(Company.class);
-		makerString2.getWhere().inEx("codes", false, 1, 2, 3, 4);
+		@Test
+		@DisplayName("inex 쿼리 작성테스트 문자")
+		void getQueryinEx2() {
+			var makerString = new KonanQueryBuilder<Company>(Company.class);
+			makerString.getWhere().inEx("codes", true, "1", "2", "3", "4");
+			var makerString2 = new KonanQueryBuilder<Company>(Company.class);
+			makerString2.getWhere().inEx("codes", false, "1", "2", "3", "4");
 
-		String kquery1 = makerString.getQuery();
-		String kquery2 = makerString2.getQuery();
+			String kquery1 = makerString.getQuery();
+			String kquery2 = makerString2.getQuery();
 
-		assertAll(
-				() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery1),
-				() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery2)
-		);
-	}
+			assertAll(
+					() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery1),
+					() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery2)
+			);
+		}
 
-	@Test
-	@DisplayName("inex 쿼리 작성테스트 문자 List")
-	void getQueryInWithStringList() {
-		var listString = List.of("1", "2", "3", "4");
+		@Test
+		@DisplayName("inex 쿼리 작성테스트 문자 List")
+		void getQueryInWithStringList() {
+			var listString = List.of("1", "2", "3", "4");
 
-		var makerString = new KonanQueryBuilder<Company>(Company.class);
-		makerString.getWhere().inWithStringList("codes", true, listString);
-		var makerString2 = new KonanQueryBuilder<Company>(Company.class);
-		makerString2.getWhere().inWithStringList("codes", false, listString);
+			var makerString = new KonanQueryBuilder<Company>(Company.class);
+			makerString.getWhere().inWithStringList("codes", true, listString);
+			var makerString2 = new KonanQueryBuilder<Company>(Company.class);
+			makerString2.getWhere().inWithStringList("codes", false, listString);
 
-		String kquery1 = makerString.getQuery();
-		String kquery2 = makerString2.getQuery();
+			String kquery1 = makerString.getQuery();
+			String kquery2 = makerString2.getQuery();
 
-		assertAll(
-				() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery1),
-				() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery2)
-		);
+			assertAll(
+					() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery1),
+					() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery2)
+			);
 
-	}
+		}
 
-	@Test
-	@DisplayName("inex 쿼리 작성테스트 숫자 List")
-	void getQueryInWithIntegerList() {
-		var listInt = List.of(1, 2, 3, 4);
+		@Test
+		@DisplayName("inex 쿼리 작성테스트 숫자 List")
+		void getQueryInWithIntegerList() {
+			var listInt = List.of(1, 2, 3, 4);
 
-		var makerInt = new KonanQueryBuilder<Company>(Company.class);
-		makerInt.getWhere().inWithIntegerList("codes", true, listInt);
-		var makerInt2 = new KonanQueryBuilder<Company>(Company.class);
-		makerInt2.getWhere().inWithIntegerList("codes", false, listInt);
+			var makerInt = new KonanQueryBuilder<Company>(Company.class);
+			makerInt.getWhere().inWithIntegerList("codes", true, listInt);
+			var makerInt2 = new KonanQueryBuilder<Company>(Company.class);
+			makerInt2.getWhere().inWithIntegerList("codes", false, listInt);
 
-		String kquery1 = makerInt.getQuery();
-		String kquery2 = makerInt2.getQuery();
+			String kquery1 = makerInt.getQuery();
+			String kquery2 = makerInt2.getQuery();
 
-		assertAll(
-				() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery1),
-				() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery2)
-		);
+			assertAll(
+					() -> assertEquals("codes IN { '1', '2', '3', '4' }", kquery1),
+					() -> assertEquals("codes IN { 1, 2, 3, 4 }", kquery2)
+			);
+		}
+
 	}
 
 	@Test
