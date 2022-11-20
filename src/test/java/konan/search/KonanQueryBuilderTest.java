@@ -64,7 +64,7 @@ class KonanQueryBuilderTest {
 		//then
 		assertThrows(IllegalStateException.class,
 				fault::getKonanQuery,
-				"괄호의 열고 닫고 갯수가 정확하지 않습니다.");
+				"괄호의 열고 닫고 갯수가 불일치 합니다.");
 
 	}
 
