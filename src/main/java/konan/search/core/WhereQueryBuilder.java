@@ -248,6 +248,40 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		return in(fieldName, quote, params.toArray());
 	}
 
+	public WhereQueryBuilder<T> andIn(String fieldName, boolean quote, Integer... params) {
+		internalAppendAdverb("AND");
+		in(fieldName, quote, (Object[])params);
+
+		return this;
+	}
+
+	public WhereQueryBuilder<T> andIn(String fieldName, boolean quote, String... params) {
+		internalAppendAdverb("AND");
+		in(fieldName, quote, (Object[])params);
+
+		return this;
+	}
+
+	public WhereQueryBuilder<T> andInWithStringList(String fieldName, boolean quote, List<String> params) {
+		if (CollectionUtils.isEmpty(params)) {
+			return this;
+		}
+		internalAppendAdverb("AND");
+		inWithStringList(fieldName, quote, params);
+
+		return this;
+	}
+
+	public WhereQueryBuilder<T> andInWithIntegerList(String fieldName, boolean quote, List<Integer> params) {
+		if (CollectionUtils.isEmpty(params)) {
+			return this;
+		}
+		internalAppendAdverb("AND");
+		inWithIntegerList(fieldName, quote, params);
+
+		return this;
+	}
+
 	/**
 	 * In문  작성쿼리
 	 * <p>
@@ -317,22 +351,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	//
 	// 	return this;
 	// }
-
-	// public WhereQueryBuilder<T> andIn(String query) {
-	//
-	// 	return this;
-	// }
-
-	// public WhereQueryBuilder<T> In() {
-	//
-	// 	return this;
-	// }
-	//
-	// public WhereQueryBuilder<T> In(String query) {
-	//
-	// 	return this;
-	// }
-	//
 
 	/**
 	 * 검색엔진 유효 필드 인지 확인
