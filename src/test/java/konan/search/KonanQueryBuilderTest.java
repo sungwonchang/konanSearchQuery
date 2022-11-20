@@ -68,4 +68,23 @@ class KonanQueryBuilderTest {
 
 	}
 
+	@Test
+	@DisplayName("작성중인 쿼리 삭제")
+	void clear() {
+		//given
+		var maker = new KonanQueryBuilder<Company>(Company.class);
+		//when
+		WhereQueryBuilder<Company> query = maker.getWhere().equals("name", "test");
+
+		//then
+		String konanQuery = query.getKonanQuery();
+		assertNotNull(konanQuery);
+		assertFalse(konanQuery.isBlank());
+		//then2
+		query.clear();
+		String konanQuery1 = query.getKonanQuery();
+		assertTrue(konanQuery1.isBlank());
+
+	}
+
 }

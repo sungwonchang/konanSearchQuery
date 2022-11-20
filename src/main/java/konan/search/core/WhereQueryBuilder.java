@@ -281,7 +281,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * 작성중이던 쿼리를 초기화 합니다.
 	 */
 	@Override
-
 	public void clear() {
 		queryBuilder.delete(0, queryBuilder.length());
 	}
