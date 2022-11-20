@@ -299,6 +299,8 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		if (Strings.isBlank(fieldName)) {
 			throw new IllegalArgumentException("not found argument fieldName");
 		}
+		notExistFieldCheck(fieldName);
+
 		prevAppend();
 
 		queryBuilder.append(fieldName);

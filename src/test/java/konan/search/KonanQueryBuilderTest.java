@@ -14,48 +14,120 @@ import konan.searchentity.Company;
 
 class KonanQueryBuilderTest {
 
-	@Test
-	@DisplayName("and 쿼리 테스트1")
-	void getQueryAnd1() {
-		var maker = new KonanQueryBuilder<Company>(Company.class);
+	@Nested
+	@DisplayName("begin/end 쿼리 테스트")
+	class GenerateBeginEndQuery {
+		@Test
+		@DisplayName("begin  end 괄호 감싸기 테스트")
+		void getQueryBeginEnd() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
 
-		maker.getWhere().equals("name", "testCompany").and().equals("empcnt", 2);
+			maker.getWhere().begin().equals("name", "testCompany").and().equals("empcnt", 2).end();
 
-		String kquery = maker.getQuery();
-		System.out.println(kquery);
-		assertAll(
-				() -> assertEquals("name = 'testCompany' AND empcnt = 2", kquery)
-		);
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+			assertAll(
+					() -> assertEquals("( name = 'testCompany' AND empcnt = 2 )", kquery)
+			);
+		}
 	}
 
-	@Test
-	@DisplayName("Equal 쿼리 테스트1-문자형")
-	void getQueryEqualString() {
-		var maker = new KonanQueryBuilder<Company>(Company.class);
+	@Nested
+	@DisplayName("And 쿼리 테스트")
+	class GenerateAndQuery {
+		@Test
+		@DisplayName("and 쿼리 테스트1")
+		void getQueryAnd1() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
 
-		maker.getWhere().equals("name", "testCompany");
+			maker.getWhere().equals("name", "testCompany").and().equals("empcnt", 2);
 
-		String kquery = maker.getQuery();
-		System.out.println(kquery);
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+			assertAll(
+					() -> assertEquals("name = 'testCompany' AND empcnt = 2", kquery)
+			);
+		}
 
-		assertAll(
-				() -> assertEquals("name = 'testCompany'", kquery)
-		);
+		@Test
+		@DisplayName("and 쿼리 테스트2")
+		void getQueryAndForFieldValue() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+
+			maker.getWhere().equals("name", "testCompany").and("empcnt", 2);
+
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+			assertAll(
+					() -> assertEquals("name = 'testCompany' AND empcnt = 2", kquery)
+			);
+		}
 	}
 
-	@Test
-	@DisplayName("Equal 쿼리 테스트2-숫자형")
-	void getQueryEqualInteger() {
-		var maker = new KonanQueryBuilder<Company>(Company.class);
+	@Nested
+	@DisplayName("OR 쿼리 테스트")
+	class GenerateOrQuery {
+		@Test
+		@DisplayName("OR 쿼리 테스트1")
+		void getQueryOr() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
 
-		maker.getWhere().equals("empcnt", 1);
+			maker.getWhere().equals("name", "testCompany").or().equals("empcnt", 2);
 
-		String kquery = maker.getQuery();
-		System.out.println(kquery);
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+			assertAll(
+					() -> assertEquals("name = 'testCompany' OR empcnt = 2", kquery)
+			);
+		}
 
-		assertAll(
-				() -> assertEquals("empcnt = 1", kquery)
-		);
+		@Test
+		@DisplayName("OR 쿼리 테스트2")
+		void getQueryOrForFieldValue() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+
+			maker.getWhere().equals("name", "testCompany").or("empcnt", 2);
+
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+			assertAll(
+					() -> assertEquals("name = 'testCompany' OR empcnt = 2", kquery)
+			);
+		}
+	}
+
+	@Nested
+	@DisplayName("Equal 쿼리 테스트")
+	class GenerateEqualQuery {
+		@Test
+		@DisplayName("Equal 쿼리 테스트1-문자형")
+		void getQueryEqualString() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+
+			maker.getWhere().equals("name", "testCompany");
+
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+
+			assertAll(
+					() -> assertEquals("name = 'testCompany'", kquery)
+			);
+		}
+
+		@Test
+		@DisplayName("Equal 쿼리 테스트2-숫자형")
+		void getQueryEqualInteger() {
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+
+			maker.getWhere().equals("empcnt", 1);
+
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+
+			assertAll(
+					() -> assertEquals("empcnt = 1", kquery)
+			);
+		}
 	}
 
 	@Nested
@@ -270,39 +342,55 @@ class KonanQueryBuilderTest {
 
 	}
 
-	@Test
-	@DisplayName("괄호 갯수 체크-수동으로 괄호를 하는경우 괄호 체크")
-	void isNotBracketPair() {
-		//given
-		var maker = new KonanQueryBuilder<Company>(Company.class);
-		//when
-		WhereQueryBuilder<Company> fault = maker.getWhere().equals("name", "test")
-				.and().begin().equals("empcnt", 1);
+	@Nested
+	class KonanMatchCheckerInterFaceTest {
 
-		//then
-		assertThrows(IllegalStateException.class,
-				fault::getKonanQuery,
-				"괄호의 열고 닫고 갯수가 불일치 합니다.");
+		@Test
+		@DisplayName("정의 되지 않는 필드 검색")
+		void notExistFieldCheck() {
 
-	}
+		}
 
-	@Test
-	@DisplayName("작성중인 쿼리 삭제")
-	void clear() {
-		//given
-		var maker = new KonanQueryBuilder<Company>(Company.class);
-		//when
-		WhereQueryBuilder<Company> query = maker.getWhere().equals("name", "test");
+		@Test
+		@DisplayName("코난 검색 쿼리 조회")
+		void getKonanQuery() {
 
-		//then
-		String konanQuery = query.getKonanQuery();
-		assertNotNull(konanQuery);
-		assertFalse(konanQuery.isBlank());
-		//then2
-		query.clear();
-		String konanQuery1 = query.getKonanQuery();
-		assertTrue(konanQuery1.isBlank());
+		}
 
+		@Test
+		@DisplayName("괄호 갯수 체크-수동으로 괄호를 하는 경우 괄호 체크")
+		void isNotBracketPair() {
+			//given
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+			//when
+			WhereQueryBuilder<Company> fault = maker.getWhere().equals("name", "test")
+					.and().begin().equals("empcnt", 1);
+
+			//then
+			assertThrows(IllegalStateException.class,
+					fault::getKonanQuery,
+					"괄호의 열고 닫고 갯수가 불일치 합니다.");
+
+		}
+
+		@Test
+		@DisplayName("작성중인 쿼리 삭제")
+		void clear() {
+			//given
+			var maker = new KonanQueryBuilder<Company>(Company.class);
+			//when
+			WhereQueryBuilder<Company> query = maker.getWhere().equals("name", "test");
+
+			//then
+			String konanQuery = query.getKonanQuery();
+			assertNotNull(konanQuery);
+			assertFalse(konanQuery.isBlank());
+			//then2
+			query.clear();
+			String konanQuery1 = query.getKonanQuery();
+			assertTrue(konanQuery1.isBlank());
+
+		}
 	}
 
 }
