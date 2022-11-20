@@ -233,11 +233,11 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	}
 
 	public WhereQueryBuilder<T> inEx(String fieldName, boolean quote, Integer... params) {
-		return in(fieldName, quote, params);
+		return in(fieldName, quote, (Object[])params);
 	}
 
 	public WhereQueryBuilder<T> inEx(String fieldName, boolean quote, String... params) {
-		return in(fieldName, quote, params);
+		return in(fieldName, quote, (Object[])params);
 	}
 
 	public WhereQueryBuilder<T> inWithStringList(String fieldName, boolean quote, List<String> params) {
