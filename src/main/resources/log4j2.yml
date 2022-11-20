@@ -1,0 +1,15 @@
+Configuration:
+  status: warn
+
+  Appenders:
+    Console:
+      name: Console_Appender
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] [%X{dd.trace_id},%X{dd.span_id}] [%t][%F] [%C{1}.%M] - %msg%n"
+
+  Loggers:
+    Root:
+      level: debug
+      AppenderRef:
+        - ref: Console_Appender
