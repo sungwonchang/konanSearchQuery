@@ -29,13 +29,15 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * 쿼리 동작시 앞뒤 공봭추가
 	 */
 	private void prevAppend() {
-		if (queryBuilder.length() > 0)
+		if (queryBuilder.length() > 0) {
 			queryBuilder.append(" ");
+		}
 	}
 
 	private void internalAppendAdverb() {
-		if (!isAppendAdverb)
+		if (!isAppendAdverb) {
 			isAppendAdverb = true;
+		}
 	}
 
 	private void internalAppendAdverb(String adverb) {
@@ -44,8 +46,9 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 			queryBuilder.append(adverb);
 		}
 
-		if (!isAppendAdverb)
+		if (!isAppendAdverb) {
 			isAppendAdverb = true;
+		}
 	}
 
 	private void internalAppendAdverb(String adverb, String value) {
@@ -55,14 +58,16 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		}
 
 		if (!Objects.isNull(value)) {
-			if (StringUtils.isNotBlank(adverb))
+			if (StringUtils.isNotBlank(adverb)) {
 				queryBuilder.append(" ");
+			}
 
 			queryBuilder.append(value);
 		}
 
-		if (!isAppendAdverb)
+		if (!isAppendAdverb) {
 			isAppendAdverb = true;
+		}
 	}
 
 	/**
@@ -222,10 +227,46 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		prevAppend();
 		queryBuilder.append(fieldName).append(" = ");
 
-		if (quote)
+		if (quote) {
 			queryBuilder.append("'").append(value).append("'");
-		else
+		} else {
 			queryBuilder.append(value);
+		}
+
+		internalAppendAdverb();
+
+		return this;
+	}
+
+	//region in 쿼리 작성
+
+	/**
+	 * In문  작성쿼리
+	 * <p>
+	 *     추후 확인해야할점.. String List타입은 본것 같은데 .. IntList타입이 없으니 싱글 쿼텐션이 기본 값이 여도 될수도 있다..
+	 *     codes in { '01', '02' , '03', '04'}
+	 *     usage
+	 *     *
+	 * </p>
+	 * @param fieldName
+	 * @param quote
+	 * @param params
+	 * @return
+	 */
+	public WhereQueryBuilder<T> in(String fieldName, boolean quote, Object... params) {
+		if (Strings.isBlank(fieldName)) {
+			throw new IllegalArgumentException("not found argument fieldName");
+		}
+		notExistFieldCheck(fieldName);
+
+		prevAppend();
+
+		queryBuilder.append(fieldName);
+		queryBuilder.append(" IN { ");
+
+		join(quote ? "'" : Strings.EMPTY, params);
+
+		queryBuilder.append(" }");
 
 		internalAppendAdverb();
 
@@ -247,6 +288,10 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	public WhereQueryBuilder<T> inWithIntegerList(String fieldName, boolean quote, List<Integer> params) {
 		return in(fieldName, quote, params.toArray());
 	}
+
+	//endregion
+
+	//region and in 쿼리
 
 	public WhereQueryBuilder<T> andIn(String fieldName, boolean quote, Integer... params) {
 		internalAppendAdverb("AND");
@@ -282,38 +327,45 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		return this;
 	}
 
-	/**
-	 * In문  작성쿼리
-	 * <p>
-	 *     추후 확인해야할점.. String List타입은 본것 같은데 .. IntList타입이 없으니 싱글 쿼텐션이 기본 값이 여도 될수도 있다..
-	 *     codes in { '01', '02' , '03', '04'}
-	 *     usage
-	 *     *
-	 * </p>
-	 * @param fieldName
-	 * @param quote
-	 * @param params
-	 * @return
-	 */
-	public WhereQueryBuilder<T> in(String fieldName, boolean quote, Object... params) {
-		if (Strings.isBlank(fieldName)) {
-			throw new IllegalArgumentException("not found argument fieldName");
-		}
-		notExistFieldCheck(fieldName);
+	//endregion
 
-		prevAppend();
+	//region or in 쿼리
 
-		queryBuilder.append(fieldName);
-		queryBuilder.append(" IN { ");
-
-		join(quote ? "'" : Strings.EMPTY, params);
-
-		queryBuilder.append(" }");
-
-		internalAppendAdverb();
+	public WhereQueryBuilder<T> orIn(String fieldName, boolean quote, Integer... params) {
+		internalAppendAdverb("OR");
+		in(fieldName, quote, (Object[])params);
 
 		return this;
 	}
+
+	public WhereQueryBuilder<T> orIn(String fieldName, boolean quote, String... params) {
+		internalAppendAdverb("OR");
+		in(fieldName, quote, (Object[])params);
+
+		return this;
+	}
+
+	public WhereQueryBuilder<T> orInWithStringList(String fieldName, boolean quote, List<String> params) {
+		if (CollectionUtils.isEmpty(params)) {
+			return this;
+		}
+		internalAppendAdverb("OR");
+		inWithStringList(fieldName, quote, params);
+
+		return this;
+	}
+
+	public WhereQueryBuilder<T> orInWithIntegerList(String fieldName, boolean quote, List<Integer> params) {
+		if (CollectionUtils.isEmpty(params)) {
+			return this;
+		}
+		internalAppendAdverb("OR");
+		inWithIntegerList(fieldName, quote, params);
+
+		return this;
+	}
+
+	//endregion
 
 	//todo : 별도로 abstract 뺄수도 있음
 	protected void join(String mark, Object... params) {
@@ -365,7 +417,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	@Override
 	public void notExistFieldCheck(@NonNull String fieldName) {
 		if (CollectionUtils.isEmpty(this.columnAnnotationList)) {
-			throw new IllegalArgumentException("not found TableClass KonanTable Annotaion");
+			throw new IllegalArgumentException("Generic Type allColumns not found KonanColumn Annotaion");
 		}
 		boolean exists = this.columnAnnotationList.stream()
 				.anyMatch(k -> fieldName.equals(k.name()));

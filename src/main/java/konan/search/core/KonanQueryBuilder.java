@@ -8,13 +8,15 @@ import konan.search.annotaions.KonanColumn;
 import konan.search.annotaions.KonanTable;
 import lombok.Getter;
 
-@Getter
 public class KonanQueryBuilder<T> {
 
 	private final Class<?> persistentClass;
 
+	@Getter
 	private WhereQueryBuilder<T> where = null;
+
 	private KonanTable tableAnnotation = null;
+
 	private List<KonanColumn> columnAnnotationList = null;
 
 	public KonanQueryBuilder(Class<?> persistentClass) {
@@ -23,6 +25,7 @@ public class KonanQueryBuilder<T> {
 
 		tableAnnotation = getKonanTableAssign(persistentClass);
 		columnAnnotationList = getKonanColumnAssign(persistentClass);
+
 		this.where = new WhereQueryBuilder<T>(columnAnnotationList);
 	}
 
@@ -35,7 +38,7 @@ public class KonanQueryBuilder<T> {
 		if (clazz.isAnnotationPresent(KonanTable.class)) {
 			return clazz.getAnnotation(KonanTable.class);
 		}
-		return null;
+		throw new IllegalArgumentException("not found KonanTable Annotaion");
 	}
 
 	/**
