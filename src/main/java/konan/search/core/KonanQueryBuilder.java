@@ -23,6 +23,7 @@ public class KonanQueryBuilder<T> {
 
 		tableAnnotation = getKonanTableAssign(persistentClass);
 		columnAnnotationList = getKonanColumnAssign(persistentClass);
+
 		this.where = new WhereQueryBuilder<T>(columnAnnotationList);
 	}
 

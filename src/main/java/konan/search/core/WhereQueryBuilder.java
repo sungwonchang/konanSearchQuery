@@ -365,7 +365,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	@Override
 	public void notExistFieldCheck(@NonNull String fieldName) {
 		if (CollectionUtils.isEmpty(this.columnAnnotationList)) {
-			throw new IllegalArgumentException("not found TableClass KonanTable Annotaion");
+			throw new IllegalArgumentException("Generic Type allColumns not found KonanColumn Annotaion");
 		}
 		boolean exists = this.columnAnnotationList.stream()
 				.anyMatch(k -> fieldName.equals(k.name()));
