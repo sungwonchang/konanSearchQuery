@@ -130,10 +130,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @param value : 검색값
 	 * @return WhereQueryBuilder
 	 */
-	public WhereQueryBuilder<T> and(String fieldName, Object value) {
-		if (StringUtils.isEmpty(fieldName)) {
-			throw new IllegalArgumentException("not found argument fieldName");
-		}
+	public WhereQueryBuilder<T> and(@NonNull String fieldName, @NonNull Object value) {
 		notExistFieldCheck(fieldName);
 
 		prevAppend();
@@ -168,10 +165,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @param value : 검색값
 	 * @return WhereQueryBuilder
 	 */
-	public WhereQueryBuilder<T> or(String fieldName, Object value) {
-		if (StringUtils.isEmpty(fieldName)) {
-			throw new IllegalArgumentException("not found argument fieldName");
-		}
+	public WhereQueryBuilder<T> or(@NonNull String fieldName, @NonNull Object value) {
 		notExistFieldCheck(fieldName);
 
 		prevAppend();
@@ -194,7 +188,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @param value : 검색 값
 	 * @return WhereQueryBuilder
 	 */
-	public WhereQueryBuilder<T> equals(String fieldName, String value) {
+	public WhereQueryBuilder<T> equals(@NonNull String fieldName, @NonNull String value) {
 		return equalEx(fieldName, true, value);
 	}
 
@@ -207,7 +201,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @param value : 검색 값
 	 * @return WhereQueryBuilder
 	 */
-	public WhereQueryBuilder<T> equals(String fieldName, Integer value) {
+	public WhereQueryBuilder<T> equals(@NonNull String fieldName, @NonNull Integer value) {
 		return equalEx(fieldName, false, value);
 	}
 
@@ -218,10 +212,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @param value : 검색 값
 	 * @return WhereQueryBuilder
 	 */
-	public WhereQueryBuilder<T> equalEx(String fieldName, boolean quote, Object value) {
-		if (StringUtils.isBlank(fieldName)) {
-			throw new IllegalArgumentException("not found argument fieldName");
-		}
+	public WhereQueryBuilder<T> equalEx(@NonNull String fieldName, boolean quote, @NonNull Object value) {
 		notExistFieldCheck(fieldName);
 
 		prevAppend();
@@ -253,10 +244,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @param params
 	 * @return
 	 */
-	public WhereQueryBuilder<T> in(String fieldName, boolean quote, Object... params) {
-		if (Strings.isBlank(fieldName)) {
-			throw new IllegalArgumentException("not found argument fieldName");
-		}
+	public WhereQueryBuilder<T> in(@NonNull String fieldName, boolean quote, @NonNull Object... params) {
 		notExistFieldCheck(fieldName);
 
 		prevAppend();
@@ -273,19 +261,19 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		return this;
 	}
 
-	public WhereQueryBuilder<T> inEx(String fieldName, boolean quote, Integer... params) {
+	public WhereQueryBuilder<T> inEx(@NonNull String fieldName, boolean quote, @NonNull Integer... params) {
 		return in(fieldName, quote, (Object[])params);
 	}
 
-	public WhereQueryBuilder<T> inEx(String fieldName, boolean quote, String... params) {
+	public WhereQueryBuilder<T> inEx(@NonNull String fieldName, boolean quote, @NonNull String... params) {
 		return in(fieldName, quote, (Object[])params);
 	}
 
-	public WhereQueryBuilder<T> inWithStringList(String fieldName, boolean quote, List<String> params) {
+	public WhereQueryBuilder<T> inWithStringList(@NonNull String fieldName, boolean quote, @NonNull List<String> params) {
 		return in(fieldName, quote, params.toArray());
 	}
 
-	public WhereQueryBuilder<T> inWithIntegerList(String fieldName, boolean quote, List<Integer> params) {
+	public WhereQueryBuilder<T> inWithIntegerList(@NonNull String fieldName, boolean quote, @NonNull List<Integer> params) {
 		return in(fieldName, quote, params.toArray());
 	}
 
@@ -293,21 +281,21 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 	//region and in 쿼리
 
-	public WhereQueryBuilder<T> andIn(String fieldName, boolean quote, Integer... params) {
+	public WhereQueryBuilder<T> andIn(@NonNull String fieldName, boolean quote, @NonNull Integer... params) {
 		internalAppendAdverb("AND");
 		in(fieldName, quote, (Object[])params);
 
 		return this;
 	}
 
-	public WhereQueryBuilder<T> andIn(String fieldName, boolean quote, String... params) {
+	public WhereQueryBuilder<T> andIn(@NonNull String fieldName, boolean quote, @NonNull String... params) {
 		internalAppendAdverb("AND");
 		in(fieldName, quote, (Object[])params);
 
 		return this;
 	}
 
-	public WhereQueryBuilder<T> andInWithStringList(String fieldName, boolean quote, List<String> params) {
+	public WhereQueryBuilder<T> andInWithStringList(@NonNull String fieldName, boolean quote, @NonNull List<String> params) {
 		if (CollectionUtils.isEmpty(params)) {
 			return this;
 		}
@@ -317,7 +305,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		return this;
 	}
 
-	public WhereQueryBuilder<T> andInWithIntegerList(String fieldName, boolean quote, List<Integer> params) {
+	public WhereQueryBuilder<T> andInWithIntegerList(@NonNull String fieldName, boolean quote, @NonNull List<Integer> params) {
 		if (CollectionUtils.isEmpty(params)) {
 			return this;
 		}
@@ -331,21 +319,21 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 	//region or in 쿼리
 
-	public WhereQueryBuilder<T> orIn(String fieldName, boolean quote, Integer... params) {
+	public WhereQueryBuilder<T> orIn(@NonNull String fieldName, boolean quote, @NonNull Integer... params) {
 		internalAppendAdverb("OR");
 		in(fieldName, quote, (Object[])params);
 
 		return this;
 	}
 
-	public WhereQueryBuilder<T> orIn(String fieldName, boolean quote, String... params) {
+	public WhereQueryBuilder<T> orIn(@NonNull String fieldName, boolean quote, @NonNull String... params) {
 		internalAppendAdverb("OR");
 		in(fieldName, quote, (Object[])params);
 
 		return this;
 	}
 
-	public WhereQueryBuilder<T> orInWithStringList(String fieldName, boolean quote, List<String> params) {
+	public WhereQueryBuilder<T> orInWithStringList(@NonNull String fieldName, boolean quote, @NonNull List<String> params) {
 		if (CollectionUtils.isEmpty(params)) {
 			return this;
 		}
@@ -355,7 +343,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		return this;
 	}
 
-	public WhereQueryBuilder<T> orInWithIntegerList(String fieldName, boolean quote, List<Integer> params) {
+	public WhereQueryBuilder<T> orInWithIntegerList(@NonNull String fieldName, boolean quote, @NonNull List<Integer> params) {
 		if (CollectionUtils.isEmpty(params)) {
 			return this;
 		}
@@ -382,29 +370,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 			}
 		}
 	}
-
-	// /**
-	//  * and 필드 = 값 형태의 조건문을 추가 합니다.
-	//  * @param fieldName : 검색필드
-	//  * @param value : 검색값
-	//  * @return WhereQueryBuilder
-	//  */
-	// public WhereQueryBuilder<T> andIn(String fieldName, Object value) {
-	// 	if (StringUtils.isEmpty(fieldName)) {
-	// 		throw new IllegalArgumentException("not found argument fieldName");
-	// 	}
-	// 	notExistFieldCheck(fieldName);
-	//
-	// 	prevAppend();
-	// 	queryBuilder.append("AND");
-	// 	prevAppend();
-	// 	queryBuilder.append(fieldName);
-	// 	queryBuilder.append(" = ").append(value);
-	//
-	// 	internalAppendAdverb();
-	//
-	// 	return this;
-	// }
 
 	/**
 	 * 검색엔진 유효 필드 인지 확인
