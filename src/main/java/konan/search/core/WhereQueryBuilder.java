@@ -355,6 +355,56 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 	//endregion
 
+	//region NOT IN : NOT 인의 경우 사용빈도가 낮을 가능성이 높아 andNotIn, orNotIn등의 함수는 작성하지 않는다.
+
+	/**
+	 * notIn 문  작성쿼리
+	 * <p>
+	 *     추후 확인해야할점.. String List타입은 본것 같은데 .. IntList타입이 없으니 싱글 쿼텐션이 기본 값이 여도 될수도 있다..
+	 *     codes not in { '01', '02' , '03', '04'}
+	 *     usage
+	 *     *
+	 * </p>
+	 * @param fieldName 필드명
+	 * @param quote 싱글쿼텐션 여부
+	 * @param params notin 조건의 값
+	 * @return builder
+	 */
+	public WhereQueryBuilder<T> notIn(@NonNull String fieldName, boolean quote, @NonNull Object... params) {
+		notExistFieldCheck(fieldName);
+
+		prevAppend();
+
+		queryBuilder.append(fieldName);
+		queryBuilder.append(" NOT IN { ");
+
+		join(quote ? "'" : Strings.EMPTY, params);
+
+		queryBuilder.append(" }");
+
+		internalAppendAdverb();
+
+		return this;
+	}
+
+	public WhereQueryBuilder<T> notInEx(@NonNull String fieldName, boolean quote, @NonNull Integer... params) {
+		return notIn(fieldName, quote, (Object[])params);
+	}
+
+	public WhereQueryBuilder<T> notInEx(@NonNull String fieldName, boolean quote, @NonNull String... params) {
+		return notIn(fieldName, quote, (Object[])params);
+	}
+
+	public WhereQueryBuilder<T> notInWithStringList(@NonNull String fieldName, boolean quote, @NonNull List<String> params) {
+		return notIn(fieldName, quote, params.toArray());
+	}
+
+	public WhereQueryBuilder<T> notInWithIntegerList(@NonNull String fieldName, boolean quote, @NonNull List<Integer> params) {
+		return notIn(fieldName, quote, params.toArray());
+	}
+
+	//endregion NOT IN
+
 	//todo : 별도로 abstract 뺄수도 있음
 	protected void join(String mark, Object... params) {
 
@@ -439,17 +489,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	//
 	// 	return this;
 	// }
-
-	// public WhereQueryBuilder<T> notIn() {
-	//
-	// 	return this;
-	// }
-	//
-	// public WhereQueryBuilder<T> notIn(String query) {
-	//
-	// 	return this;
-	// }
-	//
 
 	// public WhereQueryBuilder<T> like(String query) {
 	//
