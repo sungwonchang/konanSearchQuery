@@ -1,4 +1,4 @@
-package konan.search;
+package konan.search.core;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,12 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import konan.search.core.KonanQueryBuilder;
-import konan.search.core.WhereQueryBuilder;
 import konan.searchentity.TestCompany;
 import konan.searchentity.TestMock2;
 
-class KonanQueryBuilderTest {
+class WhereQueryBuilderTest {
 
 	@Nested
 	@DisplayName("begin/end 쿼리 테스트")
