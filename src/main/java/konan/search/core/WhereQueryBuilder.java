@@ -434,7 +434,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @param useSynonym : 동의어 검색옵션을 사용할지 여부          
 	 * @return WhereQueryBuilder
 	 */
-	public WhereQueryBuilder<T> equalIndex(@NonNull String fieldName, @NonNull Object value,
+	public WhereQueryBuilder<T> equalIndex(@NonNull String fieldName, @NonNull String value,
 										   @NonNull PremiumSearchOption premiumSearchOption, boolean useSynonym) {
 		notExistFieldCheck(fieldName);
 
