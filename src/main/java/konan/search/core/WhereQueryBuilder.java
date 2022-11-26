@@ -461,9 +461,9 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 	/**
 	 * <pre>
-	 *      and not 조건 문을 추가합니다.
-	 *      and not 조건문 이후에 연결은 기타 다른 쿼리로 chainning 을 사용합니다. 기본적인 구문 추가 기능만합니다.*
-	 *      and not in, or notin 은 고려 대상이였으나 생성 method가 많아짐으로 프로세스에서 제거 하였습니다.*
+	 *      andnot 조건 문을 추가합니다.
+	 *      andnot 조건문 이후에 연결은 기타 다른 쿼리로 chainning 을 사용합니다. 기본적인 구문 추가 기능만합니다.*
+	 *      andnot in, or andnot in 은 고려 대상이였으나 생성 method가 많아짐으로 프로세스에서 제거 하였습니다.*
 	 * </pre>
 	 *
 	 * @return WhereQueryBuilder
