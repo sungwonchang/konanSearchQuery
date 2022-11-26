@@ -14,7 +14,7 @@ public class WhereQueryOrTest {
 	@DisplayName("OR 쿼리 테스트")
 	class GenerateOrQuery {
 		@Test
-		@DisplayName("OR 쿼리 테스트1")
+		@DisplayName("OR 쿼리 테스트 or only")
 		void getQueryOr() {
 			var maker = new KonanQueryBuilder<TestCompany>(TestCompany.class);
 
@@ -28,8 +28,8 @@ public class WhereQueryOrTest {
 		}
 
 		@Test
-		@DisplayName("OR 쿼리 테스트2")
-		void getQueryOrForFieldValue() {
+		@DisplayName("OR 쿼리 테스트 Integer")
+		void getQueryOrForFieldValueForInteger() {
 			var maker = new KonanQueryBuilder<TestCompany>(TestCompany.class);
 
 			maker.getWhere().equals("name", "testTestCompany").or("empcnt", 2);
@@ -38,6 +38,20 @@ public class WhereQueryOrTest {
 			System.out.println(kquery);
 			assertAll(
 					() -> assertEquals("name = 'testTestCompany' OR empcnt = 2", kquery)
+			);
+		}
+
+		@Test
+		@DisplayName("OR 쿼리 테스트 String")
+		void getQueryOrForFieldValueForString() {
+			var maker = new KonanQueryBuilder<TestCompany>(TestCompany.class);
+
+			maker.getWhere().equals("name", "testTestCompany").or("addr", "서울시");
+
+			String kquery = maker.getQuery();
+			System.out.println(kquery);
+			assertAll(
+					() -> assertEquals("name = 'testTestCompany' OR addr = '서울시'", kquery)
 			);
 		}
 	}

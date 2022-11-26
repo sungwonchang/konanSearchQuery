@@ -27,7 +27,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	private boolean isAppendAdverb = false;
 
 	/**
-	 * 쿼리 동작시 앞뒤 공봭추가
+	 * 쿼리 동작시 앞뒤 공백추가
 	 */
 	private void prevAppend() {
 		if (queryBuilder.length() > 0) {
@@ -104,8 +104,9 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	public WhereQueryBuilder<T> append(String query) {
 		queryBuilder.append(query);
 
-		if (StringUtils.isNotBlank(query))
+		if (StringUtils.isNotBlank(query)) {
 			internalAppendAdverb();
+		}
 
 		return this;
 	}
@@ -131,18 +132,18 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @param value : 검색값
 	 * @return WhereQueryBuilder
 	 */
-	public WhereQueryBuilder<T> and(@NonNull String fieldName, @NonNull Object value) {
-		notExistFieldCheck(fieldName);
+	public WhereQueryBuilder<T> and(@NonNull String fieldName, @NonNull String value) {
+		return this.and().equals(fieldName, value);
+	}
 
-		prevAppend();
-		queryBuilder.append("AND");
-		prevAppend();
-		queryBuilder.append(fieldName);
-		queryBuilder.append(" = ").append(value);
-
-		internalAppendAdverb();
-
-		return this;
+	/**
+	 * and 필드 = 값 형태의 조건문을 추가 합니다.
+	 * @param fieldName : 검색필드
+	 * @param value : 검색값
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> and(@NonNull String fieldName, @NonNull Integer value) {
+		return this.and().equals(fieldName, value);
 	}
 
 	/**
@@ -166,18 +167,18 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @param value : 검색값
 	 * @return WhereQueryBuilder
 	 */
-	public WhereQueryBuilder<T> or(@NonNull String fieldName, @NonNull Object value) {
-		notExistFieldCheck(fieldName);
+	public WhereQueryBuilder<T> or(@NonNull String fieldName, @NonNull Integer value) {
+		return this.or().equals(fieldName, value);
+	}
 
-		prevAppend();
-		queryBuilder.append("OR");
-		prevAppend();
-		queryBuilder.append(fieldName);
-		queryBuilder.append(" = ").append(value);
-
-		internalAppendAdverb();
-
-		return this;
+	/**
+	 * OR 필드-값 형태의 조건문을 추가합니다.
+	 * @param fieldName : 검색필드
+	 * @param value : 검색값
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> or(@NonNull String fieldName, @NonNull String value) {
+		return this.or().equals(fieldName, value);
 	}
 
 	/**
@@ -283,37 +284,25 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	//region and in 쿼리
 
 	public WhereQueryBuilder<T> andIn(@NonNull String fieldName, boolean quote, @NonNull Integer... params) {
-		internalAppendAdverb("AND");
-		in(fieldName, quote, (Object[])params);
-
-		return this;
+		return this.and().in(fieldName, quote, (Object[])params);
 	}
 
 	public WhereQueryBuilder<T> andIn(@NonNull String fieldName, boolean quote, @NonNull String... params) {
-		internalAppendAdverb("AND");
-		in(fieldName, quote, (Object[])params);
-
-		return this;
+		return this.and().in(fieldName, quote, (Object[])params);
 	}
 
 	public WhereQueryBuilder<T> andInWithStringList(@NonNull String fieldName, boolean quote, @NonNull List<String> params) {
 		if (CollectionUtils.isEmpty(params)) {
 			return this;
 		}
-		internalAppendAdverb("AND");
-		inWithStringList(fieldName, quote, params);
-
-		return this;
+		return this.and().inWithStringList(fieldName, quote, params);
 	}
 
 	public WhereQueryBuilder<T> andInWithIntegerList(@NonNull String fieldName, boolean quote, @NonNull List<Integer> params) {
 		if (CollectionUtils.isEmpty(params)) {
 			return this;
 		}
-		internalAppendAdverb("AND");
-		inWithIntegerList(fieldName, quote, params);
-
-		return this;
+		return this.and().inWithIntegerList(fieldName, quote, params);
 	}
 
 	//endregion
@@ -321,37 +310,25 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	//region or in 쿼리
 
 	public WhereQueryBuilder<T> orIn(@NonNull String fieldName, boolean quote, @NonNull Integer... params) {
-		internalAppendAdverb("OR");
-		in(fieldName, quote, (Object[])params);
-
-		return this;
+		return this.or().in(fieldName, quote, (Object[])params);
 	}
 
 	public WhereQueryBuilder<T> orIn(@NonNull String fieldName, boolean quote, @NonNull String... params) {
-		internalAppendAdverb("OR");
-		in(fieldName, quote, (Object[])params);
-
-		return this;
+		return this.or().in(fieldName, quote, (Object[])params);
 	}
 
 	public WhereQueryBuilder<T> orInWithStringList(@NonNull String fieldName, boolean quote, @NonNull List<String> params) {
 		if (CollectionUtils.isEmpty(params)) {
 			return this;
 		}
-		internalAppendAdverb("OR");
-		inWithStringList(fieldName, quote, params);
-
-		return this;
+		return this.or().inWithStringList(fieldName, quote, params);
 	}
 
 	public WhereQueryBuilder<T> orInWithIntegerList(@NonNull String fieldName, boolean quote, @NonNull List<Integer> params) {
 		if (CollectionUtils.isEmpty(params)) {
 			return this;
 		}
-		internalAppendAdverb("OR");
-		inWithIntegerList(fieldName, quote, params);
-
-		return this;
+		return this.or().inWithIntegerList(fieldName, quote, params);
 	}
 
 	//endregion
@@ -457,6 +434,32 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 	//endregion 인덱스 옵션 검색
 
+	//region and not 
+
+	/**
+	 * <pre>
+	 *      andnot 조건 문을 추가합니다.
+	 *      andnot 조건문 이후에 연결은 기타 다른 쿼리로 chainning 을 사용합니다. 기본적인 구문 추가 기능만합니다.*
+	 *      andnot in, or andnot in 은 고려 대상이였으나 생성 method가 많아짐으로 프로세스에서 제거 하였습니다.*
+	 * </pre>
+	 *
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> andNot() {
+		internalAppendAdverb("ANDNOT");
+		return this;
+	}
+
+	public WhereQueryBuilder<T> andNot(@NonNull String fieldName, @NonNull String value) {
+		return this.andNot().equals(fieldName, value);
+	}
+
+	public WhereQueryBuilder<T> andNot(@NonNull String fieldName, @NonNull Integer value) {
+		return this.andNot().equals(fieldName, value);
+	}
+
+	//endregion and not
+
 	//todo : 별도로 abstract 뺄수도 있음
 	protected void join(String mark, Object... params) {
 
@@ -526,16 +529,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	public void clear() {
 		queryBuilder.delete(0, queryBuilder.length());
 	}
-
-	// public WhereQueryBuilder<T> andNot() {
-	//
-	// 	return this;
-	// }
-	//
-	// public WhereQueryBuilder<T> andNot(String query) {
-	//
-	// 	return this;
-	// }
 
 	// public WhereQueryBuilder<T> like(String query) {
 	//
