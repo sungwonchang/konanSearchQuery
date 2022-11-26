@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -16,21 +15,6 @@ public class WhereQueryEqualIndexTest {
 	@Nested
 	@DisplayName("EqualIndex 쿼리 테스트")
 	class GenerateEqualIndexQuery {
-		@Test
-		@DisplayName("고급검색 동의어 옵션 기본값인 함수 테스트-PremiumSearchOption.NONE")
-		void equalIndexForSynonymNone_PremiumSearchOptionNone() {
-			//given
-			var maker = new KonanQueryBuilder<TestCompany>(TestCompany.class);
-
-			//when
-			maker.getWhere().equalIndex("name", "testTestCompany", PremiumSearchOption.NONE);
-
-			String kquery = maker.getQuery();
-			//then
-			assertAll(
-					() -> assertEquals("name = 'testTestCompany' synonym", kquery)
-			);
-		}
 
 		@DisplayName("고급검색 동의어 옵션 기본값인 함수 테스트")
 		@ParameterizedTest
@@ -60,22 +44,6 @@ public class WhereQueryEqualIndexTest {
 			//then
 			assertAll(
 					() -> assertEquals(result, kquery)
-			);
-		}
-
-		@Test
-		@DisplayName("고급검색 동의어 옵션 포함 함수 테스트-PremiumSearchOption.NONE-synonym false")
-		void equalIndex_None_false() {
-			//given
-			var maker = new KonanQueryBuilder<TestCompany>(TestCompany.class);
-
-			//when
-			maker.getWhere().equalIndex("name", "testTestCompany", PremiumSearchOption.NONE, false);
-
-			String kquery = maker.getQuery();
-			//then
-			assertAll(
-					() -> assertEquals("name = 'testTestCompany'", kquery)
 			);
 		}
 
