@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import konan.search.annotaions.KonanColumn;
+import konan.search.core.enums.PremiumSearchOption;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -239,10 +240,10 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 *     usage
 	 *     *
 	 * </p>
-	 * @param fieldName
-	 * @param quote
-	 * @param params
-	 * @return
+	 * @param fieldName 검색 필드
+	 * @param quote 싱글쿼텐션 포함 여부
+	 * @param params in 검색할 파라미터
+	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> in(@NonNull String fieldName, boolean quote, @NonNull Object... params) {
 		notExistFieldCheck(fieldName);
@@ -405,6 +406,57 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 	//endregion NOT IN
 
+	//region 인덱스 옵션 검색
+
+	/**
+	 * <pre>
+	 * equalIndexEx 의 동의어 검색조건이 기본값으로 설정하여 해당 부분 생략함
+	 * </pre>
+	 * @param fieldName 검색 필드명
+	 * @param value 검색 값
+	 * @param premiumSearchOption 고급 검색옵션
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> equalIndex(@NonNull String fieldName, @NonNull String value,
+										   @NonNull PremiumSearchOption premiumSearchOption) {
+		return equalIndex(fieldName, value, premiumSearchOption, true);
+	}
+
+	/**
+	 * <pre>
+	 *    equalIndexEx  구현 모체 고급 검색 옵션을 사용한 검색이 사용 가능하다
+	 *    고급 검색옵션에서 숫자 검색이 존재 하지 않기때문에 quote옵션은 제외
+	 * 	 기본은 text 타입만 검색 가능하지만 string param타입도 검색이 되는 경우가 존재함. 4.x,3.x 버전에선 가능함
+	 * </pre>
+	 * @param fieldName : 검색 필드
+	 * @param value : 검색 값
+	 * @param premiumSearchOption : 고급검색옵션
+	 * @param useSynonym : 동의어 검색옵션을 사용할지 여부          
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> equalIndex(@NonNull String fieldName, @NonNull String value,
+										   @NonNull PremiumSearchOption premiumSearchOption, boolean useSynonym) {
+		notExistFieldCheck(fieldName);
+
+		prevAppend();
+		queryBuilder.append(fieldName).append(" = ");
+
+		queryBuilder.append("'").append(value).append("'");
+
+		if (PremiumSearchOption.NONE != premiumSearchOption) {
+			queryBuilder.append(" ").append(premiumSearchOption.getValue());
+		}
+
+		if (useSynonym) {
+			queryBuilder.append(" synonym");
+		}
+		internalAppendAdverb();
+
+		return this;
+	}
+
+	//endregion 인덱스 옵션 검색
+
 	//todo : 별도로 abstract 뺄수도 있음
 	protected void join(String mark, Object... params) {
 
@@ -474,11 +526,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	public void clear() {
 		queryBuilder.delete(0, queryBuilder.length());
 	}
-
-	// public WhereQueryBuilder<T> equalIdx(String query) {
-	//
-	// 	return this;
-	// }
 
 	// public WhereQueryBuilder<T> andNot() {
 	//
