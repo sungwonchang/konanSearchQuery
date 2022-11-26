@@ -457,6 +457,32 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 	//endregion 인덱스 옵션 검색
 
+	//region and not 
+
+	/**
+	 * <pre>
+	 *      and not 조건 문을 추가합니다.
+	 *      and not 조건문 이후에 연결은 기타 다른 쿼리로 chainning 을 사용합니다. 기본적인 구문 추가 기능만합니다.*
+	 *      and not in, or notin 은 고려 대상이였으나 생성 method가 많아짐으로 프로세스에서 제거 하였습니다.*
+	 * </pre>
+	 *
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> andNot() {
+		internalAppendAdverb("ANDNOT");
+		return this;
+	}
+
+	public WhereQueryBuilder<T> andNot(@NonNull String fieldName, @NonNull String value) {
+		return this.andNot().equals(fieldName, value);
+	}
+
+	public WhereQueryBuilder<T> andNot(@NonNull String fieldName, @NonNull Integer value) {
+		return this.andNot().equals(fieldName, value);
+	}
+
+	//endregion and not
+
 	//todo : 별도로 abstract 뺄수도 있음
 	protected void join(String mark, Object... params) {
 
@@ -526,16 +552,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	public void clear() {
 		queryBuilder.delete(0, queryBuilder.length());
 	}
-
-	// public WhereQueryBuilder<T> andNot() {
-	//
-	// 	return this;
-	// }
-	//
-	// public WhereQueryBuilder<T> andNot(String query) {
-	//
-	// 	return this;
-	// }
 
 	// public WhereQueryBuilder<T> like(String query) {
 	//
