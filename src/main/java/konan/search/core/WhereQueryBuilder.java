@@ -30,7 +30,9 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	private boolean isAppendAdverb = false;
 
 	/**
+	 * <p>
 	 * 쿼리 동작시 앞뒤 공백추가
+	 * </p>
 	 */
 	private void prevAppend() {
 		if (queryBuilder.length() > 0) {
@@ -75,7 +77,12 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	}
 
 	/**
+	 * <p>
 	 * 괄호 "(" 를 엽니다
+	 * </p>
+	 * <pre>
+	 *	   query.begin() => "("
+	 * </pre>
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> begin() {
@@ -86,7 +93,13 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	}
 
 	/**
-	 * 괄호 ")" 를 닫습니다.
+	 * <p>
+	 *      괄호 ")" 를 닫습니다.
+	 * </p>
+	 * <pre>
+	 *      query.begin() => ")"
+	 * </pre>*
+	 *
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> end() {
@@ -97,10 +110,13 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	}
 
 	/**
-	 * 하드코딩을 입력이 가능합니다
 	 * <p>
-	 *      해당기능은 쿼리의 필드 체크를 하지 못하기 떄문에 필드 체크의 누락이 있을수 있습니다  비추천하지만 문법에서 지원하지 않는 쿼리 사용을 위해 추가 되었습니다.
+	 *     하드코딩을 입력이 가능합니다 - 지원하지 않는 문법이나 신규 문법 작성을 위해 열어둡니다. (하지만 문법 및 필드 체크는 지원되지 않습니다)1
+	 *     해당기능은 쿼리의 필드 체크를 하지 못하기 떄문에 필드 체크의 누락이 있을수 있습니다  비추천하지만 문법에서 지원하지 않는 쿼리 사용을 위해 추가 되었습니다.
 	 * </p>
+	 * <pre>
+	 *     query.append("name='john'") => "name='john'"
+	 * </pre>
 	 * @param query name='john'
 	 * @return WhereQueryBuilder
 	 */
@@ -115,7 +131,13 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	}
 
 	/**
-	 * and 조건 문을 추가합니다.*
+	 * <p>
+	 *     and 조건 문을 추가합니다.*
+	 * </p>
+	 * <pre>
+	 *		query.and() => "and "
+	 * </pre>
+	 *
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> and() {
@@ -123,6 +145,17 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		return this;
 	}
 
+	/**
+	 * <p>
+	 *     and 조건 문을 추가합니다. Matcher 형식을 지원합니다.
+	 * </p>
+	 * <pre>
+	 *		maker.getWhere().equals("name", "testTestCompany").and("empcnt", eq(50));  --> "name = 'testTestCompany' AND empcnt = 50"
+	 *	maker.getWhere().equals("name", "testTestCompany").and("addr", eq("서울시"));  --> "name = 'testTestCompany' AND addr = '서울시'"
+	 * </pre>
+	 *
+	 * @return WhereQueryBuilder
+	 */
 	public WhereQueryBuilder<T> and(@NonNull String fieldName, @NonNull KonanMatcher matcher) {
 		notExistFieldCheck(fieldName);
 
@@ -140,7 +173,12 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	// }
 
 	/**
+	 * <p>
 	 * and 필드 = 값 형태의 조건문을 추가 합니다.
+	 * </p>
+	 * <pre>
+	 *		maker.getWhere().equals("name", "testTestCompany").and("addr", "서울시");	 --> "name = 'testTestCompany' AND addr = '서울시'"
+	 * </pre>
 	 * @param fieldName : 검색필드
 	 * @param value : 검색값
 	 * @return WhereQueryBuilder
@@ -150,7 +188,12 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	}
 
 	/**
+	 * <p>
 	 * and 필드 = 값 형태의 조건문을 추가 합니다.
+	 * </p>
+	 * <pre>
+	 *		maker.getWhere().equals("name", "testTestCompany").and("empcnt", 2);     --> "name = 'testTestCompany' AND empcnt = 2"
+	 * </pre>*
 	 * @param fieldName : 검색필드
 	 * @param value : 검색값
 	 * @return WhereQueryBuilder
