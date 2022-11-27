@@ -27,6 +27,7 @@ public class KonanQueryBuilder<T> {
 		columnAnnotationList = getKonanColumnAssign(persistentClass);
 
 		this.where = new WhereQueryBuilder<T>(columnAnnotationList);
+
 	}
 
 	/**
@@ -47,6 +48,7 @@ public class KonanQueryBuilder<T> {
 	 * @return KonanColumn을 List로 반환합니다.
 	 */
 	private List<KonanColumn> getKonanColumnAssign(Class<?> clazz) {
+
 		List<KonanColumn> columnsAnnotation = new ArrayList<>();
 		Arrays.stream(clazz.getDeclaredFields()).forEach(field -> {
 			if (field.isAnnotationPresent(KonanColumn.class)) {
