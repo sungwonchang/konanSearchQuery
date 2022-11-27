@@ -9,6 +9,8 @@ import org.apache.logging.log4j.util.Strings;
 
 import konan.search.annotaions.KonanColumn;
 import konan.search.core.enums.PremiumSearchOption;
+import konan.search.matcher.FieldNameMatcher;
+import konan.search.matcher.KonanMatcher;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	private final List<KonanColumn> columnAnnotationList;
 	private final StringBuilder queryBuilder = new StringBuilder();
+	private T targetClass;
 
 	private int beginBracket = 0;
 	private int endBracket = 0;
@@ -117,6 +120,16 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 */
 	public WhereQueryBuilder<T> and() {
 		internalAppendAdverb("AND");
+		return this;
+	}
+
+	public WhereQueryBuilder<T> and(@NonNull String fieldName, @NonNull KonanMatcher matcher) {
+		notExistFieldCheck(fieldName);
+
+		var fieldMatcher = new FieldNameMatcher(fieldName, matcher);
+		String matchValue = fieldMatcher.match();
+		this.and().append(matchValue);
+
 		return this;
 	}
 
