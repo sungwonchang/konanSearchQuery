@@ -583,11 +583,11 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 	//region greaterthan
 
-	public WhereQueryBuilder<T> greaterThan(@NonNull String fieldName, boolean quote, @NonNull String value) {
+	public WhereQueryBuilder<T> greaterThan(@NonNull String fieldName, @NonNull String value) {
 		return expression(KonanExpression.GREATER_THAN, fieldName, true, value);
 	}
 
-	public WhereQueryBuilder<T> greaterThan(@NonNull String fieldName, boolean quote, @NonNull Integer value) {
+	public WhereQueryBuilder<T> greaterThan(@NonNull String fieldName, @NonNull Integer value) {
 		return expression(KonanExpression.GREATER_THAN, fieldName, false, value);
 	}
 
