@@ -227,7 +227,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> equals(@NonNull String fieldName, @NonNull String value) {
-		return equals(fieldName, true, value);
+		return expression(KonanExpression.EQUAL, fieldName, true, value);
 	}
 
 	/**
@@ -240,31 +240,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> equals(@NonNull String fieldName, @NonNull Integer value) {
-		return equals(fieldName, false, value);
-	}
-
-	/**
-	 * equals의 구현 모체
-	 * @param fieldName : 검색 필드
-	 * @param quote : 값의 싱글 쿼텐션 추가 여부 (String)
-	 * @param value : 검색 값
-	 * @return WhereQueryBuilder
-	 */
-	public WhereQueryBuilder<T> equals(@NonNull String fieldName, boolean quote, @NonNull Object value) {
-		notExistFieldCheck(fieldName);
-
-		prevAppend();
-		queryBuilder.append(fieldName).append(" = ");
-
-		if (quote) {
-			queryBuilder.append("'").append(value).append("'");
-		} else {
-			queryBuilder.append(value);
-		}
-
-		internalAppendAdverb();
-
-		return this;
+		return expression(KonanExpression.EQUAL, fieldName, false, value);
 	}
 
 	//region in 쿼리 작성
