@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import konan.search.annotaions.KonanColumn;
+import konan.search.core.enums.KonanExpression;
 import konan.search.core.enums.PremiumSearchOption;
 import konan.search.matcher.FieldNameMatcher;
 import konan.search.matcher.KonanMatcher;
@@ -595,13 +596,48 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 	//endregion
 
+	//region greaterthan
+
+	public WhereQueryBuilder<T> greaterThan(@NonNull String fieldName, boolean quote, @NonNull String value) {
+		return expression(KonanExpression.GREATER_THAN, fieldName, true, value);
+	}
+
+	public WhereQueryBuilder<T> greaterThan(@NonNull String fieldName, boolean quote, @NonNull Integer value) {
+		return expression(KonanExpression.GREATER_THAN, fieldName, false, value);
+	}
+
+	//endregion
+
+	/**
+	 * 쿼리 조건자에 대한 공통 식 만드는 함수
+	 * @param expression KonanExpression
+	 * @param fieldName 필드명
+	 * @param quote 싱글쿼텟션여부 (String)
+	 * @param value 비교값
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> expression(@NonNull KonanExpression expression, @NonNull String fieldName, boolean quote, @NonNull Object value) {
+		notExistFieldCheck(fieldName);
+
+		prevAppend();
+		queryBuilder.append(fieldName).append(expression.getValue());
+		if (quote) {
+			queryBuilder.append("'").append(value).append("'");
+		} else {
+			queryBuilder.append(value);
+		}
+		internalAppendAdverb();
+
+		return this;
+	}
+
 	//todo : 별도로 abstract 뺄수도 있음
 	protected void join(String mark, Object... params) {
 
 		if (params != null && params.length > 0) {
 			queryBuilder.append(mark).append(params[0]).append(mark);
 
-			for (int index = 1; index < params.length; index++) {
+			p for (int index = 1; index < params.length; index++) {
 				if (params[index] != null) {
 					queryBuilder.append(", ");
 
@@ -668,10 +704,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	//
 
 	//
-	// public WhereQueryBuilder<T> greaterThan(String query) {
-	//
-	// 	return this;
-	// }
+
 	//
 	// public WhereQueryBuilder<T> lessOrEqual(String query) {
 	//
