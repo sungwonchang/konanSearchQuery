@@ -145,27 +145,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		return this;
 	}
 
-	/**
-	 * <p>
-	 *     and 조건 문을 추가합니다. Matcher 형식을 지원합니다.
-	 * </p>
-	 * <pre>
-	 *		maker.getWhere().equals("name", "testTestCompany").and("empcnt", eq(50));  --> "name = 'testTestCompany' AND empcnt = 50"
-	 *		maker.getWhere().equals("name", "testTestCompany").and("addr", eq("서울시"));  --> "name = 'testTestCompany' AND addr = '서울시'"
-	 * </pre>
-	 *
-	 * @return WhereQueryBuilder
-	 */
-	public WhereQueryBuilder<T> and(@NonNull String fieldName, @NonNull KonanMatcher matcher) {
-		notExistFieldCheck(fieldName);
-
-		var fieldMatcher = new FieldNameMatcher(fieldName, matcher);
-		String matchValue = fieldMatcher.match();
-		this.and().append(matchValue);
-
-		return this;
-	}
-
 	// 최종 사용할지 보류
 	// public WhereQueryBuilder<T> and(String value) {
 	// 	internalAppendAdverb("AND", value);
@@ -513,6 +492,52 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	public WhereQueryBuilder<T> andNot(@NonNull String fieldName, @NonNull Integer value) {
 		return this.andNot().equals(fieldName, value);
 	}
+
+	//region and, or Matcher
+
+	/**
+	 * <p>
+	 *     and 조건 문을 추가합니다. Matcher 형식을 지원합니다.
+	 * </p>
+	 * <pre>
+	 *		maker.getWhere().equals("name", "testTestCompany").and("empcnt", eq(50));  --> "name = 'testTestCompany' AND empcnt = 50"
+	 *		maker.getWhere().equals("name", "testTestCompany").and("addr", eq("서울시"));  --> "name = 'testTestCompany' AND addr = '서울시'"
+	 * </pre>
+	 *
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> and(@NonNull String fieldName, @NonNull KonanMatcher matcher) {
+		notExistFieldCheck(fieldName);
+
+		var fieldMatcher = new FieldNameMatcher(fieldName, matcher);
+		String matchValue = fieldMatcher.match();
+		this.and().append(matchValue);
+
+		return this;
+	}
+
+	/**
+	 * <p>
+	 *     and 조건 문을 추가합니다. Matcher 형식을 지원합니다.
+	 * </p>
+	 * <pre>
+	 *		maker.getWhere().equals("name", "testTestCompany").and("empcnt", eq(50));  --> "name = 'testTestCompany' AND empcnt = 50"
+	 *		maker.getWhere().equals("name", "testTestCompany").and("addr", eq("서울시"));  --> "name = 'testTestCompany' AND addr = '서울시'"
+	 * </pre>
+	 *
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> or(@NonNull String fieldName, @NonNull KonanMatcher matcher) {
+		notExistFieldCheck(fieldName);
+
+		var fieldMatcher = new FieldNameMatcher(fieldName, matcher);
+		String matchValue = fieldMatcher.match();
+		this.or().append(matchValue);
+
+		return this;
+	}
+
+	//endregion
 
 	//endregion and not
 
