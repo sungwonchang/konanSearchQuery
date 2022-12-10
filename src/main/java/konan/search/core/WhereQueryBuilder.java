@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import konan.search.annotaions.KonanColumn;
+import konan.search.core.enums.KonanExpression;
 import konan.search.core.enums.PremiumSearchOption;
 import konan.search.matcher.FieldNameMatcher;
 import konan.search.matcher.KonanMatcher;
@@ -226,7 +227,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> equals(@NonNull String fieldName, @NonNull String value) {
-		return equals(fieldName, true, value);
+		return expression(KonanExpression.EQUAL, fieldName, true, value);
 	}
 
 	/**
@@ -239,31 +240,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> equals(@NonNull String fieldName, @NonNull Integer value) {
-		return equals(fieldName, false, value);
-	}
-
-	/**
-	 * equals의 구현 모체
-	 * @param fieldName : 검색 필드
-	 * @param quote : 값의 싱글 쿼텐션 추가 여부 (String)
-	 * @param value : 검색 값
-	 * @return WhereQueryBuilder
-	 */
-	public WhereQueryBuilder<T> equals(@NonNull String fieldName, boolean quote, @NonNull Object value) {
-		notExistFieldCheck(fieldName);
-
-		prevAppend();
-		queryBuilder.append(fieldName).append(" = ");
-
-		if (quote) {
-			queryBuilder.append("'").append(value).append("'");
-		} else {
-			queryBuilder.append(value);
-		}
-
-		internalAppendAdverb();
-
-		return this;
+		return expression(KonanExpression.EQUAL, fieldName, false, value);
 	}
 
 	//region in 쿼리 작성
@@ -556,14 +533,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> like(@NonNull String fieldName, @NonNull String value) {
-		notExistFieldCheck(fieldName);
-
-		prevAppend();
-		queryBuilder.append(fieldName).append(" like ");
-		queryBuilder.append("'").append(value).append("'");
-		internalAppendAdverb();
-
-		return this;
+		return expression(KonanExpression.LIKE, fieldName, true, value);
 	}
 
 	//endregion
@@ -571,18 +541,40 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	//region greaterEqual
 
 	public WhereQueryBuilder<T> greaterEqual(@NonNull String fieldName, @NonNull String value) {
-		return greaterEqual(fieldName, true, value);
+		return expression(KonanExpression.GREATER_EQUAL_THAN, fieldName, true, value);
 	}
 
 	public WhereQueryBuilder<T> greaterEqual(@NonNull String fieldName, @NonNull Integer value) {
-		return greaterEqual(fieldName, false, value);
+		return expression(KonanExpression.GREATER_EQUAL_THAN, fieldName, false, value);
 	}
 
-	public WhereQueryBuilder<T> greaterEqual(@NonNull String fieldName, boolean quote, @NonNull Object value) {
+	//endregion
+
+	//region greaterthan
+
+	public WhereQueryBuilder<T> greaterThan(@NonNull String fieldName, @NonNull String value) {
+		return expression(KonanExpression.GREATER_THAN, fieldName, true, value);
+	}
+
+	public WhereQueryBuilder<T> greaterThan(@NonNull String fieldName, @NonNull Integer value) {
+		return expression(KonanExpression.GREATER_THAN, fieldName, false, value);
+	}
+
+	//endregion
+
+	/**
+	 * 식에 대한 공통 함수 작성 :  쿼리 조건자에 대한 공통 식 만드는 함수
+	 * @param expression KonanExpression
+	 * @param fieldName 필드명
+	 * @param quote 싱글쿼텟션여부 (String)
+	 * @param value 비교값
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> expression(@NonNull KonanExpression expression, @NonNull String fieldName, boolean quote, @NonNull Object value) {
 		notExistFieldCheck(fieldName);
 
 		prevAppend();
-		queryBuilder.append(fieldName).append(" >= ");
+		queryBuilder.append(fieldName).append(expression.getValue());
 		if (quote) {
 			queryBuilder.append("'").append(value).append("'");
 		} else {
@@ -592,8 +584,6 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 		return this;
 	}
-
-	//endregion
 
 	//todo : 별도로 abstract 뺄수도 있음
 	protected void join(String mark, Object... params) {
@@ -668,10 +658,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	//
 
 	//
-	// public WhereQueryBuilder<T> greaterThan(String query) {
-	//
-	// 	return this;
-	// }
+
 	//
 	// public WhereQueryBuilder<T> lessOrEqual(String query) {
 	//
