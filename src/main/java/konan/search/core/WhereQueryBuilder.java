@@ -637,7 +637,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		if (params != null && params.length > 0) {
 			queryBuilder.append(mark).append(params[0]).append(mark);
 
-			p for (int index = 1; index < params.length; index++) {
+			for (int index = 1; index < params.length; index++) {
 				if (params[index] != null) {
 					queryBuilder.append(", ");
 
