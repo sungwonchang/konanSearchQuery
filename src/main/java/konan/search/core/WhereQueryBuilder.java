@@ -226,7 +226,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> equals(@NonNull String fieldName, @NonNull String value) {
-		return equalEx(fieldName, true, value);
+		return equals(fieldName, true, value);
 	}
 
 	/**
@@ -239,7 +239,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> equals(@NonNull String fieldName, @NonNull Integer value) {
-		return equalEx(fieldName, false, value);
+		return equals(fieldName, false, value);
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @param value : 검색 값
 	 * @return WhereQueryBuilder
 	 */
-	public WhereQueryBuilder<T> equalEx(@NonNull String fieldName, boolean quote, @NonNull Object value) {
+	public WhereQueryBuilder<T> equals(@NonNull String fieldName, boolean quote, @NonNull Object value) {
 		notExistFieldCheck(fieldName);
 
 		prevAppend();
@@ -493,6 +493,8 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		return this.andNot().equals(fieldName, value);
 	}
 
+	//endregion and not
+
 	//region and, or Matcher
 
 	/**
@@ -539,7 +541,59 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 
 	//endregion
 
-	//endregion and not
+	//region like
+
+	/**
+	 * <p>
+	 *  like 조건을 추가 합니다. 단 like 비교구문에  *은 사용자가 입력하게 유도합니다.
+	 *  다른 구문과 다르게 like구문은 String형식만 가능하기때문에 Object형식으로 받지 않는다.
+	 * </p>
+	 * <pre>
+	 *	maker.getWhere().like("name", "testTestCompany*");  --> "name like 'testTestCompany*'"
+	 * </pre>
+	 * @param fieldName 필드명
+	 * @param value 비교값
+	 * @return WhereQueryBuilder
+	 */
+	public WhereQueryBuilder<T> like(@NonNull String fieldName, @NonNull String value) {
+		notExistFieldCheck(fieldName);
+
+		prevAppend();
+		queryBuilder.append(fieldName).append(" like ");
+		queryBuilder.append("'").append(value).append("'");
+		internalAppendAdverb();
+
+		return this;
+	}
+
+	//endregion
+
+	//region greaterEqual
+
+	public WhereQueryBuilder<T> greaterEqual(@NonNull String fieldName, @NonNull String value) {
+		return greaterEqual(fieldName, true, value);
+	}
+
+	public WhereQueryBuilder<T> greaterEqual(@NonNull String fieldName, @NonNull Integer value) {
+		return greaterEqual(fieldName, false, value);
+	}
+
+	public WhereQueryBuilder<T> greaterEqual(@NonNull String fieldName, boolean quote, @NonNull Object value) {
+		notExistFieldCheck(fieldName);
+
+		prevAppend();
+		queryBuilder.append(fieldName).append(" > ");
+		if (quote) {
+			queryBuilder.append("'").append(value).append("'");
+		} else {
+			queryBuilder.append(value);
+		}
+		internalAppendAdverb();
+
+		return this;
+	}
+
+	//endregion
 
 	//todo : 별도로 abstract 뺄수도 있음
 	protected void join(String mark, Object... params) {
@@ -611,15 +665,8 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		queryBuilder.delete(0, queryBuilder.length());
 	}
 
-	// public WhereQueryBuilder<T> like(String query) {
 	//
-	// 	return this;
-	// }
-	//
-	// public WhereQueryBuilder<T> greaterOrEqual(String query) {
-	//
-	// 	return this;
-	// }
+
 	//
 	// public WhereQueryBuilder<T> greaterThan(String query) {
 	//
