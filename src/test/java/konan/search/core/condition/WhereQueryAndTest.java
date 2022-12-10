@@ -1,6 +1,5 @@
 package konan.search.core.condition;
 
-import static konan.search.matcher.KonanMatcherFactory.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -53,34 +52,6 @@ public class WhereQueryAndTest {
 			System.out.println(kquery);
 			assertAll(
 					() -> assertEquals("name = 'testTestCompany' AND addr = '서울시'", kquery)
-			);
-		}
-
-		@Test
-		@DisplayName("and 쿼리 테스트 and Matcher String")
-		void getQueryAndForEqualMatchForString() {
-			var maker = new KonanQueryBuilder<TestCompany>(TestCompany.class);
-
-			maker.getWhere().equals("name", "testTestCompany").and("addr", eq("서울시"));
-
-			String kquery = maker.getQuery();
-			System.out.println(kquery);
-			assertAll(
-					() -> assertEquals("name = 'testTestCompany' AND addr = '서울시'", kquery)
-			);
-		}
-
-		@Test
-		@DisplayName("and 쿼리 테스트 and Matcher Integer")
-		void getQueryAndForEqualMatchForInteger() {
-			var maker = new KonanQueryBuilder<TestCompany>(TestCompany.class);
-
-			maker.getWhere().equals("name", "testTestCompany").and("empcnt", eq(50));
-
-			String kquery = maker.getQuery();
-			System.out.println(kquery);
-			assertAll(
-					() -> assertEquals("name = 'testTestCompany' AND empcnt = 50", kquery)
 			);
 		}
 	}

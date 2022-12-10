@@ -151,7 +151,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * </p>
 	 * <pre>
 	 *		maker.getWhere().equals("name", "testTestCompany").and("empcnt", eq(50));  --> "name = 'testTestCompany' AND empcnt = 50"
-	 *	maker.getWhere().equals("name", "testTestCompany").and("addr", eq("서울시"));  --> "name = 'testTestCompany' AND addr = '서울시'"
+	 *		maker.getWhere().equals("name", "testTestCompany").and("addr", eq("서울시"));  --> "name = 'testTestCompany' AND addr = '서울시'"
 	 * </pre>
 	 *
 	 * @return WhereQueryBuilder
