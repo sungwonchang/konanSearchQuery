@@ -557,14 +557,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	 * @return WhereQueryBuilder
 	 */
 	public WhereQueryBuilder<T> like(@NonNull String fieldName, @NonNull String value) {
-		notExistFieldCheck(fieldName);
-
-		prevAppend();
-		queryBuilder.append(fieldName).append(" like ");
-		queryBuilder.append("'").append(value).append("'");
-		internalAppendAdverb();
-
-		return this;
+		return expression(KonanExpression.LIKE, fieldName, true, value);
 	}
 
 	//endregion
