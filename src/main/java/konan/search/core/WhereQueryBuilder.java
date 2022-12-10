@@ -582,7 +582,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 		notExistFieldCheck(fieldName);
 
 		prevAppend();
-		queryBuilder.append(fieldName).append(" > ");
+		queryBuilder.append(fieldName).append(" >= ");
 		if (quote) {
 			queryBuilder.append("'").append(value).append("'");
 		} else {
