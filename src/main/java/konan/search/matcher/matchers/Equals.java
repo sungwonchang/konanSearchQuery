@@ -1,4 +1,6 @@
-package konan.search.matcher;
+package konan.search.matcher.matchers;
+
+import konan.search.matcher.KonanMatcher;
 
 public class Equals implements KonanMatcher {
 	private final Object value;
