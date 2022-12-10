@@ -572,26 +572,11 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	//region greaterEqual
 
 	public WhereQueryBuilder<T> greaterEqual(@NonNull String fieldName, @NonNull String value) {
-		return greaterEqual(fieldName, true, value);
+		return expression(KonanExpression.GREATER_EQUAL_THAN, fieldName, true, value);
 	}
 
 	public WhereQueryBuilder<T> greaterEqual(@NonNull String fieldName, @NonNull Integer value) {
-		return greaterEqual(fieldName, false, value);
-	}
-
-	public WhereQueryBuilder<T> greaterEqual(@NonNull String fieldName, boolean quote, @NonNull Object value) {
-		notExistFieldCheck(fieldName);
-
-		prevAppend();
-		queryBuilder.append(fieldName).append(" >= ");
-		if (quote) {
-			queryBuilder.append("'").append(value).append("'");
-		} else {
-			queryBuilder.append(value);
-		}
-		internalAppendAdverb();
-
-		return this;
+		return expression(KonanExpression.GREATER_EQUAL_THAN, fieldName, false, value);
 	}
 
 	//endregion
@@ -609,7 +594,7 @@ public class WhereQueryBuilder<T> implements KonanMatchChecker {
 	//endregion
 
 	/**
-	 * 쿼리 조건자에 대한 공통 식 만드는 함수
+	 * 식에 대한 공통 함수 작성 :  쿼리 조건자에 대한 공통 식 만드는 함수
 	 * @param expression KonanExpression
 	 * @param fieldName 필드명
 	 * @param quote 싱글쿼텟션여부 (String)
